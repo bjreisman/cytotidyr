@@ -240,6 +240,5 @@ mydata.tr %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 0), 
         axis.text = element_text(color = "black"), strip.placement = "outside") + 
   facet_grid(.~panel, space = 'free', scales = "free", switch = "x")
-/
 ```
 ![Chunk output](/vignettes/figures/unnamed-chunk-12-1.png)
