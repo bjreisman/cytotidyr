@@ -242,4 +242,4 @@ mydata.tr %>%
   facet_grid(.~panel, space = 'free', scales = "free", switch = "x")
 /
 ```
-![Chunk output](/figures/unnamed-chunk-12-1.png)
+![Chunk output](/vignettes/figures/unnamed-chunk-12-1.png)
