@@ -1,0 +1,17 @@
+base
+cytotidyr
+flowCore
+curl
+httr
+CytobankAPI
+scico
+tidyverse
+ggplot2
+tibble
+tidyr
+readr
+purrr
+dplyr
+stringr
+forcats
+bindrcpp

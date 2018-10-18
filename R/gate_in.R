@@ -6,7 +6,6 @@
 #' @return A flow frame containing the data which lie within the selected gate
 #' @seealso \code{\link[flowCore]{Subset}}
 #' @seealso \code{\link[flowCore]{filter}}
-#' @export
 #' @importFrom flowCore Subset filter
 
 gatein <- function(data, gate) { #this function subsets the data within the specified gate

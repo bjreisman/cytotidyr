@@ -4,7 +4,6 @@
 #' @param exp_id The experiment ID, found in the URL of the experiment
 #' @return A compensation matrix (if one exists).
 #' @seealso \code{\link[CytobankAPI]{compensations.list}}
-#' @export
 #' @import CytobankAPI
 
 get_compensations <- function(cyto_session, exp_id) {

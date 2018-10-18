@@ -5,7 +5,6 @@
 #' @return A list of populations and how they are defined by gates
 #' @seealso \code{\link[flowCore]{Subset}}
 #' @seealso \code{\link[flowCore]{filter}}
-#' @export
 #' @importFrom CytobankAPI populations.list
 
 get_populations <- function(cyto_session, exp_id){

@@ -1,0 +1,244 @@
+---
+title: "Introduction to Cytotidyr"
+author: "Benjmain Reisman"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to Cytotidyr}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  cache = TRUE, 
+  dev = "png",
+  dpi = 150,
+  fig.path = "figures/",
+  fig.width = 4,
+  fig.height = 3.5
+)
+library(cytotidyr)
+library(flowCore)
+library(CytobankAPI)
+library(scico)
+library(tidyverse)
+package.dir <- paste0(head(unlist(str_split(getwd(), "\\/")),-1), collapse= "/")
+
+```
+
+
+## What is Cytotidyr?
+
+_The goal of cytotidyr is to integrate data-preprocessing done in cytobank with downstream analysis in R._
+
+The cytobankAPI package provides a method for importing cytobank endpoints into R, but applying those endpoints to raw data to reproduce the data preprocessing done in cytobank is less than straight forward. 
+
+Cytotidyr provides a set of function for applying the following preprocessing steps from cytobank:
+- Data scaling
+- Panel assignment
+- Compensation
+- Gating on populations
+- Sample tagging
+
+With the exception of sample tagging, all of these steps can be applied to flowFrame objects to integrate with analysis pipelines based on flowCore. Alternatively, all steps except for compensation and gating can be applied to tibbles to generate _*tidy data*_ for integration with tidyverse based analysis pipelines. 
+
+## Disclaimer
+
+Cytotidyr is currently in development phase. While we have validated it on a number of cytobank experiments, it may not always perform as expected. *Please* make sure to validate that cytotidyr provides the output you expect by comparing any outputs (cell counts, medians, biaxial plots, etc...) to what you see on cytobank. 
+
+
+## Experiment Info
+All functions within cytotidyr rely on the the`get_experimentinfo` function, which calls multiple internal functions to obtain the scales, compensations, panels, gates, population hierarchy, and sample tags from cytobank for a given experiment. 
+
+
+Let's see the package in action on the ["Welcome to Cytobank - U937 dataset"](https://community.cytobank.org/cytobank/experiments/61#), which is publicly available at ["community.cytobank.org"](community.cytobank.org), as `experiment.id = 61`. 
+
+_Note that to actually connect run this code, you would need a valid authorization token and access to the specified experiment. In this case, I needed to clone the experiment to my cytobank community account. For the purposes of this vignette, I've saved the output of the experiment.info function so that it accessible. In practice, it may be worthwhile to save the experiment info object for reproducability purposes._
+```{r echo=TRUE, eval=FALSE}
+library(CytobankAPI)
+library(cytotidyr)
+token <- "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyNzE2MDRjNzBjMjJhN2NmNTcwMmRiYjdkNDUzMDc5OCIsImV4cCI6MTUzOTgyOTk2OCwidXNlcl9pZCI6ODg1NiwiYXVkIjoiY3l0b2JhbmtfYXBpX3YxX3VzZXJzIiwiaWF0IjoxNTM5ODAxMTY4LCJpc3MiOiJodHRwczovL2NvbW11bml0eS5jeXRvYmFuay5vcmcvIiwibmJmIjoxNTM5ODAxMTY4LCJzdWIiOiJjeXRvYmFua19hcGlfdjEifQ.pwfxQnAIJvUH5gD0LPogb47gdkVhX_F-psUl4CDlVc4"
+
+cyto_session <- authenticate("community", auth_token = token)
+experiment.id <- 75861
+
+exp_info <- get_experimentinfo(cyto_session = cyto_session, experiment.id)
+#saveRDS(exp_info, file.path(package.dir, "data", "vignette_exp_info.rds"))
+
+```
+
+```{r echo=FALSE, eval=TRUE}
+exp_info <- readRDS(file.path(package.dir, "data", "vignette_exp_info.rds"))
+```
+The `exp_info` object is a list containing the seven items shown below. 
+```{r}
+names(exp_info)
+
+```
+
+Let's look at each:
+
+###FCS files
+The `fcs_files` object in `exp_info` a large tibble, with one row for each fcs file in the experiment and a number of columns with information about each file. The two columns that will be of most interest are: 1) the `id` column, which is the internal identifier that cytobank uses for each fcs file, and 2) the `filename`, which is what we actually named the file at the cytometer.
+
+```{r}
+head(exp_info$fcs_files$expFile)
+```
+
+###Sample Tags
+
+Sample tags contain annotations for each file that assigns them to conditions. In this case, the samples have been tagged by condition, but no other sample tags.
+```{r}
+head(exp_info$sampletags)
+```
+
+One thing we may want to do is download FCS files that have been tagged. To do that we'll need to find the right IDs. Here's quick example showing how to do that:
+
+```{r}
+fcs.ids <- exp_info$fcs_files %>%
+  left_join(exp_info$sampletags, by = c("filename" = "FCS Filename")) %>%
+  filter(!is.na(Conditions)) %>%
+  select(id, filename, Conditions)
+
+fcs.ids$id
+```
+
+```{r echo=TRUE, eval = FALSE}
+
+fcs.zip.path <- fcs_files.download_zip(cyto_session, experiment.id, fcs.ids$id, 
+                       directory = file.path(package.dir, "data"))
+```
+
+```{r unzip and read}
+fcs.zip.path <- "C:/Users/benja/OneDrive/cytotidyr/data/experiment_75861_fcs_files.zip"
+fcs.unzipped <- unzip(fcs.zip.path, exdir = file.path(package.dir, "data"))
+
+myflowSet <- read.flowSet(fcs.unzipped)
+myflowSet.list <- as.list(myflowSet@frames)
+
+```
+
+### Compensations
+
+With multicolor fluorescence flow cytometry it is critical to apply a 'compensation' to the data to correct for spillover from adjacent channels. Oftentimes a compensation matrix will be calculated and stored in the fcs file at the time the sample is acquired. Other times it may be necessary to adjust the compensation matrices after the fact within cytobank. Currently cytotidyr only retrieves the compensation matrices that are explicitly defined within cytobank, but we can use the base functionality to retrieve the comp matrix for a specific file. 
+
+Unfortunately, this is an older FCS file and it does not contain its compensation matrix internally. I've created an empty matrix in cytobank for demo purposes that we'll use here. 
+```{r}
+comp.matrix <- exp_info$compensations$`Identity Matrix`$compensation_matrix
+
+myflowSet.compensated <- lapply(myflowSet.list, compensate, comp.matrix)
+```
+
+
+
+### Scales
+Scales and panels are combined into one object in exp_info as `scales`. This may change in future versions of cytotidyr. To apply scales we'll use the `apply_scales` function which is also part of cytotidyr. Currently `apply_scales` accepts flowFrames and tibbles/data.frames as inputs. In the future, flowSets may also be supported.  
+```{r}
+myflowSet.scaled <- lapply(myflowSet.compensated, apply_scales, exp_info) 
+
+#inspect the first flowframe in the flowSet
+summary(exprs(myflowSet.scaled[[1]]))
+```
+
+
+### Gating on Populations
+One of the common preprocessing steps in flow cytometry is 'gating' to select subsets of cells. Populations are defined by a series of gates which are applied to the transformed data. At a minimum, gating is used to separate intact cells from debris, but often times more specific gates for single cells, live cells, or specific cell subsets are defined.
+
+Here we'll gate on live cells. 
+```{r}
+ff.1 <- cytotidyr::gate_population(myflowSet.scaled[[1]],
+                                   population = "Live Cells",
+                                   exp_info,
+                                   apply_scales = FALSE)
+
+myflowSet.gated <- lapply(
+  myflowSet.scaled,
+  gate_population,
+  population = "Live Cells",
+  exp_info,
+  apply_scales = FALSE,
+  verbose = FALSE
+  )
+
+```
+
+
+
+
+### Panels
+```{r}
+mydata.list <- lapply(myflowSet.gated, function(ff){
+  
+  as.tibble(exprs(ff)) %>%
+    mutate(filename = description(ff)$GUID)}
+)
+panel.lut <- lapply(exp_info$scales,
+                    function(panel) {
+                    tibble(id = as.character(panel$fcsFileIDs),
+                    panel = panel$name)
+                    }) %>%
+                    bind_rows() %>%
+                    left_join(exp_info$fcs_files) %>%
+                    select(filename, panel)
+mydata.tidy <- bind_rows(mydata.list) %>%
+  left_join(panel.lut)
+
+mydata.panel1 <- mydata.tidy %>%
+  filter(panel == "Panel 1")
+mydata.panel1 <- apply_panel(mydata.panel1, exp_info, "Panel 1")
+
+mydata.panel2 <- mydata.tidy %>%
+  filter(panel == "Panel 2")
+mydata.panel2 <- apply_panel(mydata.panel2, exp_info, "Panel 2")
+```
+
+
+
+### Why go through all this trouble?
+
+
+```{r}
+mydata.panel1.summary <- mydata.panel1 %>%
+  left_join(exp_info$sampletags, by = c("filename" = "FCS Filename")) %>%
+  gather(channel, value, `p-Stat1-Ax647`, `p-Stat6-Ax488`) %>%
+  select(channel, value, panel, Conditions) %>%
+  group_by(Conditions, channel,panel) %>%
+  summarise(MFI = median(value))
+mydata.panel2.summary <- mydata.panel2 %>%
+  left_join(exp_info$sampletags, by = c("filename" = "FCS Filename")) %>%
+  gather(channel, value, `p-Stat3-Ax488`, `p-Stat5-Ax647`) %>%
+  select(channel, value, panel, Conditions) %>%
+  group_by(Conditions, channel, panel) %>%
+  summarise(MFI = median(value))
+
+mydata.summary <- bind_rows(mydata.panel1.summary, mydata.panel2.summary)
+mydata.summary.unstim <- mydata.summary %>%
+  filter(Conditions == "Unstim") %>%
+  rename(MFI.unstim = MFI) %>%
+  ungroup() %>%
+  select(-Conditions)
+
+mydata.tr <- mydata.summary %>%
+  left_join(mydata.summary.unstim) %>%
+  mutate(MFI.transformed.ratio = MFI - MFI.unstim) 
+scale.max <- max(abs(mydata.tr$MFI.transformed.ratio))
+
+mydata.tr %>%
+  ggplot(aes(x= channel, y = Conditions, fill = MFI.transformed.ratio)) +
+  geom_tile(col = "grey50", size = 1) + 
+  scale_x_discrete(expand = c(0,0), position = "top", name = NULL) + 
+  scale_y_discrete(expand = c(0,0)) + 
+  scico::scale_fill_scico(palette = "lisbon", 
+                          limits = c(-scale.max, scale.max), 
+                          guide = guide_colorbar(frame.colour = "black")) + 
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 90, hjust = 0), 
+        axis.text = element_text(color = "black"), strip.placement = "outside") + 
+  facet_grid(.~panel, space = 'free', scales = "free", switch = "x")
+```
+

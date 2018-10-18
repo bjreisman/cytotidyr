@@ -6,9 +6,13 @@
 #' @seealso \code{\link[flowCore]{Subset}}
 #' @seealso \code{\link[flowCore]{filter}}
 #' @export
-#' @importFrom CytobankAPI fcs file look-up table
+#' @import CytobankAPI
 
 apply_scales <- function(input, exp_info, inverse = FALSE){
+#
+#   input <- mydata.list[[1]]
+#   exp_info <- exp_info
+
   if(is_tibble(input)){
     input.tidy <- input
   }else if(class(input) == "flowFrame"){
@@ -16,20 +20,23 @@ apply_scales <- function(input, exp_info, inverse = FALSE){
   } else {
     input.tidy <- as_tibble(input)
   }
-  
-  transform.lut <- 
-    exp_info$scales[[1]]$scales%>%
+
+  col.order <- colnames(input.tidy)
+
+  transform.lut <-
+    exp_info$scales[[1]]$scales %>%
     select(shortName, cofactor, scaleType) %>%
     gather(key, value, cofactor, scaleType) %>%
     spread(shortName, value) %>%
-    column_to_rownames("key") %>%
-    select(col.order)
-  
+    column_to_rownames("key")
+
+  transform.order <- colnames(transform.lut)
   output.tidy <- input.tidy
+
   if (inverse == FALSE){
     output.tidy <- input.tidy %>%
-      select(col.order) %>%
-      map2_dfc(transform.lut, 
+      select(transform.order) %>%
+      map2_dfc(transform.lut,
                function(x,y){
                  if(y[2] ==2){
                    return(log10(x))
@@ -41,8 +48,8 @@ apply_scales <- function(input, exp_info, inverse = FALSE){
                })
   } else {
     output.tidy <- input.tidy %>%
-      select(col.order) %>%
-      map2_dfc(transform.lut, 
+      select(transform.order) %>%
+      map2_dfc(transform.lut,
                function(x,y){
                  if(y[2] ==2){
                    return(10^(x))
@@ -51,12 +58,14 @@ apply_scales <- function(input, exp_info, inverse = FALSE){
                  } else {
                    return(x)
                  }
-               }) 
+               })
   }
-  
+
   output.tidy <- output.tidy %>%
     bind_cols(input.tidy %>%
-                select(-col.order))
+                select(-transform.order)) %>%
+    select(col.order)
+
   if(is_tibble(input)){
     output <- output.tidy
   }else if(class(input) == "flowFrame"){
@@ -65,6 +74,6 @@ apply_scales <- function(input, exp_info, inverse = FALSE){
   } else{
     output <- output.tidy
   }
-  
+
   return(output)
 }
