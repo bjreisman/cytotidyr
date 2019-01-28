@@ -3,6 +3,7 @@
 export(apply_panel)
 export(apply_scales)
 export(asinh_trans)
+export(asinh_trans_prettybreaks)
 export(gate_population)
 export(get_experimentinfo)
 import(CytobankAPI)

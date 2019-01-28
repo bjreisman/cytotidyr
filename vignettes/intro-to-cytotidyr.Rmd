@@ -20,7 +20,8 @@ knitr::opts_chunk$set(
   dpi = 150,
   fig.path = "figures/",
   fig.width = 4,
-  fig.height = 3.5
+  fig.height = 3.5, 
+  fig.align = 'center'
 )
 library(cytotidyr)
 library(flowCore)
@@ -62,14 +63,13 @@ _Note that to actually connect run this code, you would need a valid authorizati
 ```{r echo=TRUE, eval=FALSE}
 library(CytobankAPI)
 library(cytotidyr)
-token <- "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyNzE2MDRjNzBjMjJhN2NmNTcwMmRiYjdkNDUzMDc5OCIsImV4cCI6MTUzOTgyOTk2OCwidXNlcl9pZCI6ODg1NiwiYXVkIjoiY3l0b2JhbmtfYXBpX3YxX3VzZXJzIiwiaWF0IjoxNTM5ODAxMTY4LCJpc3MiOiJodHRwczovL2NvbW11bml0eS5jeXRvYmFuay5vcmcvIiwibmJmIjoxNTM5ODAxMTY4LCJzdWIiOiJjeXRvYmFua19hcGlfdjEifQ.pwfxQnAIJvUH5gD0LPogb47gdkVhX_F-psUl4CDlVc4"
+token <- "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyM2FlMmNmNDQ2ODQyNGZkNDZmNzMyOTZjYzViYWY2YiIsImV4cCI6MTUzOTkxNzUzOSwidXNlcl9pZCI6ODg1NiwiYXVkIjoiY3l0b2JhbmtfYXBpX3YxX3VzZXJzIiwiaWF0IjoxNTM5ODg4NzM5LCJpc3MiOiJodHRwczovL2NvbW11bml0eS5jeXRvYmFuay5vcmcvIiwibmJmIjoxNTM5ODg4NzM5LCJzdWIiOiJjeXRvYmFua19hcGlfdjEifQ.7pS28qHB4mTM-feDEEIRRqgBKTKHvoKXelj3QHJjeSI"
 
 cyto_session <- authenticate("community", auth_token = token)
 experiment.id <- 75861
 
 exp_info <- get_experimentinfo(cyto_session = cyto_session, experiment.id)
 #saveRDS(exp_info, file.path(package.dir, "data", "vignette_exp_info.rds"))
-
 ```
 
 ```{r echo=FALSE, eval=TRUE}
@@ -79,6 +79,7 @@ The `exp_info` object is a list containing the seven items shown below.
 ```{r}
 names(exp_info)
 
+exp_info$fcs_files
 ```
 
 Let's look at each:
@@ -88,6 +89,7 @@ The `fcs_files` object in `exp_info` a large tibble, with one row for each fcs f
 
 ```{r}
 head(exp_info$fcs_files$expFile)
+exp_info$sampletags
 ```
 
 ###Sample Tags
@@ -103,7 +105,7 @@ One thing we may want to do is download FCS files that have been tagged. To do t
 fcs.ids <- exp_info$fcs_files %>%
   left_join(exp_info$sampletags, by = c("filename" = "FCS Filename")) %>%
   filter(!is.na(Conditions)) %>%
-  select(id, filename, Conditions)
+  dplyr::select(id, filename, Conditions)
 
 fcs.ids$id
 ```
@@ -129,6 +131,7 @@ With multicolor fluorescence flow cytometry it is critical to apply a 'compensat
 
 Unfortunately, this is an older FCS file and it does not contain its compensation matrix internally. I've created an empty matrix in cytobank for demo purposes that we'll use here. 
 ```{r}
+exp_info$compensations$`Identity Matrix`
 comp.matrix <- exp_info$compensations$`Identity Matrix`$compensation_matrix
 
 myflowSet.compensated <- lapply(myflowSet.list, compensate, comp.matrix)
@@ -177,6 +180,7 @@ mydata.list <- lapply(myflowSet.gated, function(ff){
   as.tibble(exprs(ff)) %>%
     mutate(filename = description(ff)$GUID)}
 )
+
 panel.lut <- lapply(exp_info$scales,
                     function(panel) {
                     tibble(id = as.character(panel$fcsFileIDs),
@@ -184,7 +188,8 @@ panel.lut <- lapply(exp_info$scales,
                     }) %>%
                     bind_rows() %>%
                     left_join(exp_info$fcs_files) %>%
-                    select(filename, panel)
+                    dplyr::select(filename, panel)
+panel.lut
 mydata.tidy <- bind_rows(mydata.list) %>%
   left_join(panel.lut)
 
@@ -206,13 +211,14 @@ mydata.panel2 <- apply_panel(mydata.panel2, exp_info, "Panel 2")
 mydata.panel1.summary <- mydata.panel1 %>%
   left_join(exp_info$sampletags, by = c("filename" = "FCS Filename")) %>%
   gather(channel, value, `p-Stat1-Ax647`, `p-Stat6-Ax488`) %>%
-  select(channel, value, panel, Conditions) %>%
+  dplyr::select(channel, value, panel, Conditions) %>%
   group_by(Conditions, channel,panel) %>%
   summarise(MFI = median(value))
+
 mydata.panel2.summary <- mydata.panel2 %>%
   left_join(exp_info$sampletags, by = c("filename" = "FCS Filename")) %>%
   gather(channel, value, `p-Stat3-Ax488`, `p-Stat5-Ax647`) %>%
-  select(channel, value, panel, Conditions) %>%
+  dplyr::select(channel, value, panel, Conditions) %>%
   group_by(Conditions, channel, panel) %>%
   summarise(MFI = median(value))
 
@@ -221,7 +227,7 @@ mydata.summary.unstim <- mydata.summary %>%
   filter(Conditions == "Unstim") %>%
   rename(MFI.unstim = MFI) %>%
   ungroup() %>%
-  select(-Conditions)
+  dplyr::select(-Conditions)
 
 mydata.tr <- mydata.summary %>%
   left_join(mydata.summary.unstim) %>%
@@ -240,5 +246,5 @@ mydata.tr %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 0), 
         axis.text = element_text(color = "black"), strip.placement = "outside") + 
   facet_grid(.~panel, space = 'free', scales = "free", switch = "x")
+ggsave('fig.svg')
 ```
-![Chunk output](/vignettes/figures/unnamed-chunk-12-1.png)

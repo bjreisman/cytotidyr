@@ -30,11 +30,38 @@ gate_population <- function(flow_frame,
   pop.gates <- unlist(gate_defs.tmp[["gates"]])
 
 
+  ### These functions catch invalid gates and turn NULLs into NAs
+  as.numeric.safe <- function(list.i){
+    NULL.ind <- which(unlist(lapply(list.i, is.null)))
+    if(length(NULL.ind) > 0){
+      list.i[NULL.ind] <- NA
+    }
+    as.numeric(list.i)
+  }
+
+  as.logical.safe <- function(list.i){
+    NULL.ind <- which(unlist(lapply(list.i, is.null)))
+    NULL.ind
+    if(length(NULL.ind) > 0){
+      length(NULL.ind)
+      list.i[NULL.ind] <- NA
+    }
+    list.i
+    as.logical(list.i)
+  }
+
+  as.character.safe <- function(list.i){
+    NULL.ind <- which(unlist(lapply(list.i, is.null)))
+    if(length(NULL.ind) > 0){
+      list.i[NULL.ind] <- NA
+    }
+    as.character.safe(list.i)
+  }
   gate.lut <- tibble(
     gateID =   names(gate_defs),
     gateName = as.character(lapply(gate_defs, `[[`, "name")),
-    gateNum = as.numeric(lapply(gate_defs, `[[`, "gateID")),
-    tailored = as.logical(lapply(gate_defs, `[[`, "tailored")),
+    gateNum = as.numeric.safe(lapply(gate_defs, `[[`, "gateID")),
+    tailored = as.logical.safe(lapply(gate_defs, `[[`, "tailored")),
     id = as.character(lapply(gate_defs, `[[`, "fcsFileID"))
   )
 

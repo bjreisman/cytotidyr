@@ -15,7 +15,7 @@
 
 get_experimentinfo <- function(cyto_session, exp_id){
   fcs.file.tibble <- get_fcsfilelut(cyto_session, exp_id)
-  message(paste(length(fcs.file.tibble), ' FCS files found'))
+  message(paste(nrow(fcs.file.tibble), ' FCS files found'))
 
   scales <- get_scales(cyto_session, exp_id)
   message(paste0("Panels:\n", paste(paste0("\t", names(scales)),
@@ -45,12 +45,23 @@ get_experimentinfo <- function(cyto_session, exp_id){
   message(paste0("Populations:\n",
                  paste(paste0("\t",   unlist(populations$name)),
                        collapse = "\n")))
+
+  panels <- lapply(scales,
+                      function(panel) {
+                        tibble(id = as.character(panel$fcsFileIDs),
+                               panel = panel$name)
+                      }) %>%
+    bind_rows() %>%
+    left_join(fcs.file.tibble) %>%
+    dplyr::select(filename, panel)
+
   return(list("fcs_files" = fcs.file.tibble,
               "sampletags" = sampletags,
               "scales" = scales,
               "compensations" = comps,
               "gates" = gates.defined,
               "populations" = populations,
+              "panels" = panels,
               "experiment.id" = exp_id
        ))
 }

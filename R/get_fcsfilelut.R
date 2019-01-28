@@ -9,7 +9,7 @@
 
 get_fcsfilelut <- function(cyto_session, exp_id){
   #print(exp_id)
-  fcs.file.list <- fcs_files.list(cyto_session, experiment.id)
+  fcs.file.list <- fcs_files.list(cyto_session, exp_id)
   fcs.file.tibble <- as_tibble(apply(as.matrix(fcs.file.list), 2, unlist))
   return(return(fcs.file.tibble))
 }

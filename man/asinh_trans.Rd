@@ -10,7 +10,7 @@ asinh_trans(cofactor)
 \item{cofactor}{a cofactor to be used for the transformation}
 }
 \value{
-A transformation of the axis by the cofactor, such that 
+A transformation of the axis by the cofactor, such that
 y = asinh(x/cofactor)
 }
 \description{
@@ -19,11 +19,11 @@ A hyperbolic arcsinh transformation for use within ggplot2.
 \examples{
 library(ggplot2)
 
-ggplot(diamonds, aes(x = price)) + 
-geom_histogram() + 
+ggplot(diamonds, aes(x = price)) +
+geom_histogram() +
 scale_x_continuous(trans = asinh_trans(5))
 }
 \seealso{
-\code{\link[scales]{pseudo_log_trans}} in the scales 
+\code{\link[scales]{pseudo_log_trans}} in the scales
 package which implements a similar transformation
 }

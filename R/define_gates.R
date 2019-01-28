@@ -8,12 +8,14 @@
 
 # gates <- CytobankAPI::gates.list(cyto_session, experiment.id)
 # gates
+lut <- exp_info$scales$`Panel 1`$scales
 define_gates <- function(gates, lut) {
 
   #mygates <- vector("list", length =  length(unlist(gates$id)))
   #names(mygates) <- unlist(gates$id)
   mygates <- vector("list")
-
+  gates$xNormalizedShortNameId
+  lut$scales
   for(i in 1:length(unlist(gates$id))) {
     ind <- gates$gateId[[i]]
     mygates[[ind]] <- vector("list")
