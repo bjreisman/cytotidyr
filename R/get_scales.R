@@ -5,7 +5,7 @@
 #' @return A data.frame for looking up scale and channel parameters
 #' @importFrom CytobankAPI scales.list panels.list
 
-get_scales <- function(cyto_session, exp_id ) {
+get_scales <- function(cyto_session, exp_id) {
 
   scales <- CytobankAPI::scales.list(cyto_session,
                                      exp_id,

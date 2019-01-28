@@ -8,7 +8,7 @@
 
 # gates <- CytobankAPI::gates.list(cyto_session, experiment.id)
 # gates
-lut <- exp_info$scales$`Panel 1`$scales
+#lut <- exp_info$scales$`Panel 1`$scales
 define_gates <- function(gates, lut) {
 
   #mygates <- vector("list", length =  length(unlist(gates$id)))
