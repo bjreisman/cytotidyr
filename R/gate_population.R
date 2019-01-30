@@ -74,13 +74,17 @@ gate_population <- function(flow_frame,
   #number of cells in the input flowFrame (for verbose output)
   n.0 <- nrow(flow_frame)
 
-  if(any(gate.variant.count[,"n"] != 1) & is.null(fcsFile_lut)) {
-    stop("Attempted to apply tailored gate without providing an FCS file list.")
+  is.null(fcsFile_lut)
+  if(  nrow(gate.variant.count) > 0) {
+    if(any(gate.variant.count[,"n"] != 1) & is.null(fcsFile_lut)) {
+      stop("Attempted to apply tailored gate without providing an FCS file list.")
+    } else {
+      gate.lut <- gate.lut %>%
+        left_join(fcsFile_lut %>% dplyr::select(id, filename), by = 'id')
+    }
   } else {
-    gate.lut <- gate.lut %>%
-      left_join(fcsFile_lut %>% dplyr::select(id, filename), by = 'id')
+    warning("Population not defined by any gates, returning ungated data.")
   }
-
   #extract the filename from the flowframe
   ff_desc <- flowCore::description(flow_frame)
   fcs.filename <- ff_desc$`$FIL`
