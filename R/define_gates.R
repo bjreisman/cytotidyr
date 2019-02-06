@@ -3,8 +3,8 @@
 #' @param gates returned by `get_gates`
 #' @param lut, retruned by `get_expinfo`
 #' @return A flow frame containing the data which lie within the selected gate
-#' @seealso \code{\link[flowCore]{Subset}}
-#' @seealso \code{\link[flowCore]{filter}}
+#' @seealso \code{\link[flowCore:Subset]{Subset}}
+#' @seealso \code{\link[flowCore:filter]{filter}}
 
 # gates <- CytobankAPI::gates.list(cyto_session, experiment.id)
 # gates

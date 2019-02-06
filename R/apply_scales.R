@@ -1,17 +1,14 @@
 #' A simple wrapper for the population.list functions in cytobankAPI
-#'
-#' @param cyto_session A cytobank session created by \code{\link[CytobankAPI]}{autheticate}
+#' @param cyto_session A cytobank session created by \code{\link[CytobankAPI:authenticate]{CytobankAPI:authenticate}}
 #' @param exp_id The experiment ID, found in the URL of the experiment
 #' @return A list of populations and how they are defined by gates
-#' @seealso \code{\link[flowCore]{Subset}}
-#' @seealso \code{\link[flowCore]{filter}}
+#' @seealso \code{\link[flowCore:Subset]{flowcore::Subset}}
+#' @seealso \code{\link[flowCore:filter]{flowcore::filter}}
 #' @export
 #' @import CytobankAPI
 
+
 apply_scales <- function(input, exp_info, inverse = FALSE){
-#
-#   input <- mydata.list[[1]]
-#   exp_info <- exp_info
 
   if(is_tibble(input)){
     input.tidy <- input

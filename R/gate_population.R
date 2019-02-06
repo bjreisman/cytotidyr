@@ -8,8 +8,6 @@
 #' @param apply_scales Should the current scales be applied during gating?
 #' Should be set to true unless the flowFrame has already been transformed.
 #' @return A flow frame containing the data which lie within the selected gates
-#' @seealso \code{\link[flowCore]{Subset}}
-#' @seealso \code{\link[flowCore]{filter}}
 #' @export
 #' @rawNamespace import(flowCore, except = filter)
 #' @import dplyr
