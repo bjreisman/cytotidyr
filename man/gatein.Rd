@@ -19,7 +19,7 @@ A flow frame containing the data which lie within the selected gate
 A simple wrapper for the gating functions in flowCore
 }
 \seealso{
-\code{\link[flowCore]{Subset}}
+\code{\link[flowCore:Subset]{Subset}}
 
-\code{\link[flowCore]{filter}}
+\code{\link[flowCore:filter]{filter}}
 }

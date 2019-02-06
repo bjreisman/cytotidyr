@@ -12,7 +12,7 @@
 #' @rawNamespace import(flowCore, except = filter)
 #' @import dplyr
 
-gate_population <- function(flow_frame,
+gate_population <- function(input,
                             population,
                             exp_info,
                             verbose = TRUE,
@@ -55,6 +55,7 @@ gate_population <- function(flow_frame,
     }
     as.character.safe(list.i)
   }
+
   gate.lut <- tibble(
     gateID =   names(gate_defs),
     gateName = as.character(lapply(gate_defs, `[[`, "name")),
@@ -70,145 +71,152 @@ gate_population <- function(flow_frame,
     dplyr::summarise(n = n())
 
   #number of cells in the input flowFrame (for verbose output)
-  n.0 <- nrow(flow_frame)
+  gate_population_internal <- function(flow_frame) {
+    n.0 <- nrow(flow_frame)
 
-  is.null(fcsFile_lut)
-  if(  nrow(gate.variant.count) > 0) {
-    if(any(gate.variant.count[,"n"] != 1) & is.null(fcsFile_lut)) {
-      stop("Attempted to apply tailored gate without providing an FCS file list.")
+    is.null(fcsFile_lut)
+    if(  nrow(gate.variant.count) > 0) {
+      if(any(gate.variant.count[,"n"] != 1) & is.null(fcsFile_lut)) {
+        stop("Attempted to apply tailored gate without providing an FCS file list.")
+      } else {
+        gate.lut <- gate.lut %>%
+          left_join(fcsFile_lut %>% dplyr::select(id, filename), by = 'id')
+      }
     } else {
-      gate.lut <- gate.lut %>%
-        left_join(fcsFile_lut %>% dplyr::select(id, filename), by = 'id')
+      warning("Population not defined by any gates, returning ungated data.")
     }
-  } else {
-    warning("Population not defined by any gates, returning ungated data.")
-  }
-  #extract the filename from the flowframe
-  ff_desc <- flowCore::description(flow_frame)
-  fcs.filename <- ff_desc$`$FIL`
+    #extract the filename from the flowframe
+    ff_desc <- flowCore::description(flow_frame)
+    fcs.filename <- ff_desc$`$FIL`
 
-  #initializes the verbose output
-  parent.name <- "ungated"
-  cellyeild <- tibble(name = "ungated",
-                          n = nrow(flow_frame),
-                          percent_total = 100,
-                          percent_parent = 100,
-                          parent = "")
+    #initializes the verbose output
+    parent.name <- "ungated"
+    cellyeild <- tibble(name = "ungated",
+                            n = nrow(flow_frame),
+                            percent_total = 100,
+                            percent_parent = 100,
+                            parent = "")
 
-  if (apply_scales == TRUE) {
-    flow_frame.t <- apply_scales(flow_frame, exp_info)
-  } else if(apply_scales == FALSE) {
-    flow_frame.t <- flow_frame
-  } else{
-    stop("apply_scales was not TRUE/FALSE")
-  }
-
-  for(j in pop.gates) { #for each gate in pop_gates
-
-    #number of cells in parent gate
-    n.parent <- nrow(flow_frame.t)
-
-    #data.frame for looking up gate variants
-    gate.variant.lut <- gate.lut %>%
-      dplyr::filter(gateNum == j)
-
-
-    #checks if there exists a tailored gate for the flowframe
-    if(nrow(gate.variant.lut) == 1){ #no tailored gates
-      gate.i <- gate_defs[[unlist(gate.variant.lut[1,"gateID"])]]
-      gate.i.name <- gate.i$name
-    } else if(fcs.filename %in% gate.variant.lut$filename) { #tailored version found
-      gateID.i <- gate.variant.lut %>%
-        dplyr::filter(filename == fcs.filename)
-      gate.i <- gate_defs[[gateID.i$gateID]]
-      gate.i.name <- paste0(gate.i$name, "*")
-    } else { #uses the non-tailored version
-      gateID.i <- gate.variant.lut %>%
-        dplyr::filter(is.na(filename))
-      gate.i <- gate_defs[[gateID.i$gateID]]
-      gate.i.name <- gate.i$name
-
+    if (apply_scales == TRUE) {
+      flow_frame.t <- apply_scales(flow_frame, exp_info)
+    } else if(apply_scales == FALSE) {
+      flow_frame.t <- flow_frame
+    } else{
+      stop("apply_scales was not TRUE/FALSE")
     }
 
+    for(j in pop.gates) { #for each gate in pop_gates
 
-    # Not sure what this was for...
-    # lhs <- paste0("`",gate.i[["channels"]][2],"`")
-    # rhs <- paste0("`",gate.i[["channels"]][1],"`")
-    # axis <- as.formula(paste0(lhs, "~" ,rhs))
+      #number of cells in parent gate
+      n.parent <- nrow(flow_frame.t)
 
-    channel.ind <-
-      match(gate.i[["channels"]], as.character(lut$shortName))
+      #data.frame for looking up gate variants
+      gate.variant.lut <- gate.lut %>%
+        dplyr::filter(gateNum == j)
 
-    channel.char <- gate.i[["channels"]]
 
-    if(gate.i[["type"]] == "RectangleGate") {
-      gate.i <- flowCore::rectangleGate(gate.i[["coords"]])
-      flow_frame.t <- gatein(flow_frame.t, gate.i)
-      ##########################
-    } else if (gate.i[["type"]] == "PolygonGate") {
-      gate.i <- flowCore::polygonGate(gate.i[["coords"]])
-      flow_frame.t <- gatein(flow_frame.t, gate.i)
-      ##########################
-     } else if (gate.i[["type"]] == "EllipseGate") {
-      colnames(gate.i[["cov_matrix"]]) <- gate.i[["channels"]]
-      gate.i <-
-        flowCore::ellipsoidGate(gate.i[["cov_matrix"]],
-                                mean = as.numeric(gate.i[["coords"]]))
-      flow_frame.t<- gatein(flow_frame.t, gate.i)
-      ##########################
-    }  else if (gate.i[["type"]] == "RangeGate") {
-      flow_frame.t <- flow_frame.t[
-        flow_frame.t@exprs[,gate.i[["channels"]][1]] > gate.i[["coords"]][[1]] &
-          flow_frame.t@exprs[,gate.i[["channels"]][1]] < gate.i[["coords"]][[2]],
-        ]
-    } else if(gate.i["type"] == "SplitGate"){
-      flow_frame.t<- flow_frame.t[
-        flow_frame.t@exprs[,gate.i[["channels"]][1]] > gate.i[["coords"]][[1]] &
-          flow_frame.t@exprs[,gate.i[["channels"]][1]] < gate.i[["coords"]][[2]]
-        ,]
+      #checks if there exists a tailored gate for the flowframe
+      if(nrow(gate.variant.lut) == 1){ #no tailored gates
+        gate.i <- gate_defs[[unlist(gate.variant.lut[1,"gateID"])]]
+        gate.i.name <- gate.i$name
+      } else if(fcs.filename %in% gate.variant.lut$filename) { #tailored version found
+        gateID.i <- gate.variant.lut %>%
+          dplyr::filter(filename == fcs.filename)
+        gate.i <- gate_defs[[gateID.i$gateID]]
+        gate.i.name <- paste0(gate.i$name, "*")
+      } else { #uses the non-tailored version
+        gateID.i <- gate.variant.lut %>%
+          dplyr::filter(is.na(filename))
+        gate.i <- gate_defs[[gateID.i$gateID]]
+        gate.i.name <- gate.i$name
 
-    } else if (gate.i["type"] == "QuadrantGate") {
+      }
 
-      flow_frame.t<- flow_frame.t[
-          flow_frame.t@exprs[,gate.i[["channels"]][1]] > gate.i[["coords"]][1,1] &
-          flow_frame.t@exprs[,gate.i[["channels"]][1]] < gate.i[["coords"]][2,1] &
-          flow_frame.t@exprs[,gate.i[["channels"]][2]] > gate.i[["coords"]][1,2] &
-          flow_frame.t@exprs[,gate.i[["channels"]][2]] < gate.i[["coords"]][2,2]
-        ,]
-    }
 
-    exp_info$gates$`split (low)`[["type"]]
-    ### number of cells after gating
+      # Not sure what this was for...
+      # lhs <- paste0("`",gate.i[["channels"]][2],"`")
+      # rhs <- paste0("`",gate.i[["channels"]][1],"`")
+      # axis <- as.formula(paste0(lhs, "~" ,rhs))
 
-    n <- nrow(flow_frame.t)
-    cellyeild <- bind_rows(
-      cellyeild,
-      tibble(
-        name = gate.i.name,
-        parent = parent.name,
-        n = n,
-        percent_total = round(n / n.0 * 100, 3),
-        percent_parent = round(n / n.parent * 100, 3)
+      channel.ind <-
+        match(gate.i[["channels"]], as.character(lut$shortName))
+
+      channel.char <- gate.i[["channels"]]
+
+      if(gate.i[["type"]] == "RectangleGate") {
+        gate.i <- flowCore::rectangleGate(gate.i[["coords"]])
+        flow_frame.t <- gatein(flow_frame.t, gate.i)
+        ##########################
+      } else if (gate.i[["type"]] == "PolygonGate") {
+        gate.i <- flowCore::polygonGate(gate.i[["coords"]])
+        flow_frame.t <- gatein(flow_frame.t, gate.i)
+        ##########################
+       } else if (gate.i[["type"]] == "EllipseGate") {
+        colnames(gate.i[["cov_matrix"]]) <- gate.i[["channels"]]
+        gate.i <-
+          flowCore::ellipsoidGate(gate.i[["cov_matrix"]],
+                                  mean = as.numeric(gate.i[["coords"]]))
+        flow_frame.t<- gatein(flow_frame.t, gate.i)
+        ##########################
+      }  else if (gate.i[["type"]] == "RangeGate") {
+        flow_frame.t <- flow_frame.t[
+          flow_frame.t@exprs[,gate.i[["channels"]][1]] > gate.i[["coords"]][[1]] &
+            flow_frame.t@exprs[,gate.i[["channels"]][1]] < gate.i[["coords"]][[2]],
+          ]
+      } else if(gate.i["type"] == "SplitGate"){
+        flow_frame.t<- flow_frame.t[
+          flow_frame.t@exprs[,gate.i[["channels"]][1]] > gate.i[["coords"]][[1]] &
+            flow_frame.t@exprs[,gate.i[["channels"]][1]] < gate.i[["coords"]][[2]]
+          ,]
+
+      } else if (gate.i["type"] == "QuadrantGate") {
+
+        flow_frame.t<- flow_frame.t[
+            flow_frame.t@exprs[,gate.i[["channels"]][1]] > gate.i[["coords"]][1,1] &
+            flow_frame.t@exprs[,gate.i[["channels"]][1]] < gate.i[["coords"]][2,1] &
+            flow_frame.t@exprs[,gate.i[["channels"]][2]] > gate.i[["coords"]][1,2] &
+            flow_frame.t@exprs[,gate.i[["channels"]][2]] < gate.i[["coords"]][2,2]
+          ,]
+      }
+
+      exp_info$gates$`split (low)`[["type"]]
+      ### number of cells after gating
+
+      n <- nrow(flow_frame.t)
+      cellyeild <- bind_rows(
+        cellyeild,
+        tibble(
+          name = gate.i.name,
+          parent = parent.name,
+          n = n,
+          percent_total = round(n / n.0 * 100, 3),
+          percent_parent = round(n / n.parent * 100, 3)
+        )
       )
-    )
-    # message(paste(gate.i.name,"\t", n, "cells"))
-    # message(paste0("\tPercent of total\t", round(n/n.0*100,2), "%"))
-    # message(paste0("\tPercent of ", gate.i.name, "\t", round(n/n.parent*100,2), "%"))
+      parent.name <- gate.i.name #sets current gate as the parent for the next gate
+    }
+    if(verbose == TRUE){
+      print(cellyeild)
+    }
 
-    parent.name <- gate.i.name #sets current gate as the parent for the next gate
-  }
-  if(verbose == TRUE){
-    print(cellyeild)
-  }
-
-  #back transforms data
-  if (apply_scales == TRUE) {
-    flow_frame.bt <- apply_scales(flow_frame.t, exp_info, inverse = TRUE)
-  } else if(apply_scales == FALSE) {
-    flow_frame.bt <- flow_frame.t
-  } else{
-    stop("apply_scales was not TRUE/FALSE")
+    #back transforms data
+    if (apply_scales == TRUE) {
+      flow_frame.bt <- apply_scales(flow_frame.t, exp_info, inverse = TRUE)
+    } else if(apply_scales == FALSE) {
+      flow_frame.bt <- flow_frame.t
+    } else{
+      stop("apply_scales was not TRUE/FALSE")
+    }
   }
 
-  return(flow_frame.bt)
+
+  if(class(input) == "flowFrame"){
+    output <- gate_population_internal(input)
+  } else if(class(input) == "flowSet"){
+    ff.list <-  as.list(input@frames)
+    output <- input
+    output.list <- lapply(ff.list, gate_population_internal)
+    output <- flowSet(output.list)
+  }
+  return(output)
 }

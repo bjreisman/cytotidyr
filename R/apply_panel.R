@@ -11,7 +11,7 @@
 #' @rawNamespace import(flowCore, except = filter)
 
 apply_panel <- function(input, exp_info, panel = NULL){
-  #panel <- "Panel 2"
+
   scales.i <- exp_info$scales
   if(length(scales.i) >1 & is.null(panel)){
     names(scales.i)
@@ -24,29 +24,34 @@ apply_panel <- function(input, exp_info, panel = NULL){
     return(NULL)
   }
 
-
-  if(is_tibble(input)){
-    input.tidy <- input
-  }else if(class(input) == "flowFrame"){
-    input.tidy <- as_tibble(exprs(input))
-  } else {
-    input.tidy <- as_tibble(input)
-  }
-
   longName <- as.character(scales.i[[panel]][["scales"]]$longName)
   shortName <- as.character(scales.i[[panel]][["scales"]]$shortName)
   names(shortName) <- longName
 
   if(is_tibble(input)){
+    input.tidy <- input
     output.tidy<- input.tidy %>%
       rename(!!!shortName)
     output <- output.tidy
-  }else if(class(input) == "flowFrame"){
+  } else if(class(input) == "flowFrame"){
     output <- input
     markernames.tmp <- names(shortName)
     names(markernames.tmp) <- shortName
     markernames(output) <- markernames.tmp
+  } else if(class(input) == "flowSet"){
+    ff.list <-  as.list(input@frames)
+    output <- input
+    markernames.tmp <- names(shortName)
+    names(markernames.tmp) <- shortName
+    output.list <- lapply(ff.list, function(ff) {
+      markernames(ff) <- markernames.tmp
+      return(ff)
+    })
+    output <- flowSet(output.list)
   } else{
+    input.tidy <- input
+    output.tidy<- input.tidy %>%
+      rename(!!!shortName)
     output <- output.tidy
   }
 

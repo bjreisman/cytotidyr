@@ -26,7 +26,7 @@ get_experimentinfo <- function(cyto_session, exp_id){
   message(paste0(length(gates.defined), ' gates found\n'))
 
   sample.tag.path <- sample_tags.download(cyto_session, exp_id)
-  sampletags <- suppressMessages(read_tsv(sample.tag.path))
+  sampletags <- suppressMessages(read.delim(sample.tag.path))
   file.remove(sample.tag.path)
   sampletags[sampletags == "-"] <- NA
 
