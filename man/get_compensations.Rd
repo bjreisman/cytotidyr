@@ -7,7 +7,7 @@
 get_compensations(cyto_session, exp_id)
 }
 \arguments{
-\item{cyto_session}{A cytobank session created by \code{\link[CytobankAPI]}{autheticate}}
+\item{cyto_session}{A cytobank session created by \code{\link[CytobankAPI:authentication]{authenticate}}}
 
 \item{exp_id}{The experiment ID, found in the URL of the experiment}
 }
@@ -18,5 +18,5 @@ A compensation matrix (if one exists).
 A simple function for dowloading compensation matricies from Cytobank
 }
 \seealso{
-\code{\link[CytobankAPI]{compensations.list}}
+\code{\link[CytobankAPI:compensations]{compensations.list}}
 }

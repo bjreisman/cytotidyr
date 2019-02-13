@@ -1,6 +1,6 @@
 #' A wrapper for multiple functions that fetches experiment info from cytobank
 #'
-#' @param cyto_session A cytobank session created by \code{\link[CytobankAPI]}{autheticate}
+#' @param cyto_session A cytobank session created by \code{\link[CytobankAPI:authentication]{authenticate}}
 #' @param exp_id The experiment ID, found in the URL of the experiment
 #' @return A list of experiment information including
 #' @return 1. A tibble of FCS files contained in the experiment from \code{\link{get_fcsfilelut}}
@@ -12,6 +12,7 @@
 #' @return 6. A integer corresponding to the experiment ID
 #' @export
 #' @import CytobankAPI
+
 
 get_experimentinfo <- function(cyto_session, exp_id){
   fcs.file.tibble <- get_fcsfilelut(cyto_session, exp_id)

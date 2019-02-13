@@ -7,7 +7,7 @@
 get_gates(cyto_session, exp_id)
 }
 \arguments{
-\item{cyto_session}{A cytobank session created by \code{\link[CytobankAPI]}{autheticate}}
+\item{cyto_session}{A cytobank session created by \code{\link[CytobankAPI:authentication]{autheticate}}}
 
 \item{exp_id}{The experiment ID, found in the URL of the experiment}
 }
@@ -18,5 +18,5 @@ A kist
 A simple function for dowloading gates from Cytobank.
 }
 \seealso{
-\code{\link[CytobankAPI]{compensations.list}}
+\code{\link[CytobankAPI:compensations]{compensations.list}}
 }

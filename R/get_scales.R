@@ -1,6 +1,6 @@
 #' A function for generating a scales and channel names look-up table from cytobank
 #'
-#' @param cyto_session A cytobank session created by \code{\link[CytobankAPI]}{autheticate}
+#' @param cyto_session A cytobank session created by \code{\link[CytobankAPI:authentication]{autheticate}}
 #' @param exp_id The experiment ID, found in the URL of the experiment
 #' @return A data.frame for looking up scale and channel parameters
 #' @importFrom CytobankAPI scales.list panels.list
