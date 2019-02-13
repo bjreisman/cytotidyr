@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Benjmain Reisman" />
+
+<meta name="date" content="2019-01-22" />
+
+<title>Introduction to Cytotidyr</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to Cytotidyr</h1>
+<h4 class="author"><em>Benjmain Reisman</em></h4>
+<h4 class="date"><em>2019-01-22</em></h4>
+
+
+
+<div id="what-is-cytotidyr" class="section level2">
+<h2>What is Cytotidyr?</h2>
+<p><em>The goal of cytotidyr is to integrate data-preprocessing done in cytobank with downstream analysis in R.</em></p>
+<p>The cytobankAPI package provides a method for importing cytobank endpoints into R, but applying those endpoints to raw data to reproduce the data preprocessing done in cytobank is less than straight forward.</p>
+<p>Cytotidyr provides a set of function for applying the following preprocessing steps from cytobank: - Data scaling - Panel assignment - Compensation - Gating on populations - Sample tagging</p>
+<p>With the exception of sample tagging, all of these steps can be applied to flowFrame objects to integrate with analysis pipelines based on flowCore. Alternatively, all steps except for compensation and gating can be applied to tibbles to generate <em><em>tidy data</em></em> for integration with tidyverse based analysis pipelines.</p>
+</div>
+<div id="disclaimer" class="section level2">
+<h2>Disclaimer</h2>
+<p>Cytotidyr is currently in development phase. While we have validated it on a number of cytobank experiments, it may not always perform as expected. <em>Please</em> make sure to validate that cytotidyr provides the output you expect by comparing any outputs (cell counts, medians, biaxial plots, etc…) to what you see on cytobank.</p>
+</div>
+<div id="experiment-info" class="section level2">
+<h2>Experiment Info</h2>
+<p>All functions within cytotidyr rely on the the<code>get_experimentinfo</code> function, which calls multiple internal functions to obtain the scales, compensations, panels, gates, population hierarchy, and sample tags from cytobank for a given experiment.</p>
+<p>Let’s see the package in action on the <a href="https://community.cytobank.org/cytobank/experiments/61#">“Welcome to Cytobank - U937 dataset”</a>, which is publicly available at <a href="community.cytobank.org">“community.cytobank.org”</a>, as <code>experiment.id = 61</code>.</p>
+<p><em>Note that to actually connect run this code, you would need a valid authorization token and access to the specified experiment. In this case, I needed to clone the experiment to my cytobank community account. For the purposes of this vignette, I’ve saved the output of the experiment.info function so that it accessible. In practice, it may be worthwhile to save the experiment info object for reproducability purposes.</em></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(CytobankAPI)
+<span class="kw">library</span>(cytotidyr)
+token &lt;-<span class="st"> &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyM2FlMmNmNDQ2ODQyNGZkNDZmNzMyOTZjYzViYWY2YiIsImV4cCI6MTUzOTkxNzUzOSwidXNlcl9pZCI6ODg1NiwiYXVkIjoiY3l0b2JhbmtfYXBpX3YxX3VzZXJzIiwiaWF0IjoxNTM5ODg4NzM5LCJpc3MiOiJodHRwczovL2NvbW11bml0eS5jeXRvYmFuay5vcmcvIiwibmJmIjoxNTM5ODg4NzM5LCJzdWIiOiJjeXRvYmFua19hcGlfdjEifQ.7pS28qHB4mTM-feDEEIRRqgBKTKHvoKXelj3QHJjeSI&quot;</span>
+
+cyto_session &lt;-<span class="st"> </span><span class="kw">authenticate</span>(<span class="st">&quot;community&quot;</span>, <span class="dt">auth_token =</span> token)
+experiment.id &lt;-<span class="st"> </span><span class="dv">75861</span>
+
+exp_info &lt;-<span class="st"> </span><span class="kw">get_experimentinfo</span>(<span class="dt">cyto_session =</span> cyto_session, experiment.id)
+<span class="co">#saveRDS(exp_info, file.path(package.dir, &quot;data&quot;, &quot;vignette_exp_info.rds&quot;))</span></code></pre></div>
+<p>The <code>exp_info</code> object is a list containing the seven items shown below.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(exp_info)
+<span class="co">#&gt; [1] &quot;fcs_files&quot;     &quot;sampletags&quot;    &quot;scales&quot;        &quot;compensations&quot;</span>
+<span class="co">#&gt; [5] &quot;gates&quot;         &quot;populations&quot;   &quot;experiment.id&quot;</span>
+
+exp_info<span class="op">$</span>fcs_files
+<span class="co">#&gt; # A tibble: 15 x 44</span>
+<span class="co">#&gt;    id    filename cytometer mode  md5sum clustered guid  threshold severity</span>
+<span class="co">#&gt;    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;   </span>
+<span class="co">#&gt;  1 2572~ 2007100~ FACSCali~ L     0313d~ FALSE     &lt;NA&gt;  &lt;NA&gt;      0       </span>
+<span class="co">#&gt;  2 2572~ 2007100~ FACSCali~ L     d5d18~ FALSE     &lt;NA&gt;  &lt;NA&gt;      0       </span>
+<span class="co">#&gt;  3 2572~ 2007100~ FACSCali~ L     5143e~ FALSE     &lt;NA&gt;  &lt;NA&gt;      0       </span>
+<span class="co">#&gt;  4 2572~ 2007100~ FACSCali~ L     9348f~ FALSE     &lt;NA&gt;  &lt;NA&gt;      0       </span>
+<span class="co">#&gt;  5 2572~ 2007100~ FACSCali~ L     64dc4~ FALSE     &lt;NA&gt;  &lt;NA&gt;      0       </span>
+<span class="co">#&gt;  6 2572~ 2007100~ FACSCali~ L     d3b17~ FALSE     &lt;NA&gt;  &lt;NA&gt;      0       </span>
+<span class="co">#&gt;  7 2572~ 2007100~ FACSCali~ L     e7bae~ FALSE     &lt;NA&gt;  &lt;NA&gt;      0       </span>
+<span class="co">#&gt;  8 2572~ 2007100~ FACSCali~ L     71ef4~ FALSE     &lt;NA&gt;  &lt;NA&gt;      0       </span>
+<span class="co">#&gt;  9 2572~ 2007100~ FACSCali~ L     88650~ FALSE     &lt;NA&gt;  &lt;NA&gt;      0       </span>
+<span class="co">#&gt; 10 2572~ 2007100~ FACSCali~ L     41e9c~ FALSE     &lt;NA&gt;  &lt;NA&gt;      0       </span>
+<span class="co">#&gt; 11 2572~ 2007100~ FACSCali~ L     49067~ FALSE     &lt;NA&gt;  &lt;NA&gt;      0       </span>
+<span class="co">#&gt; 12 2572~ 2007100~ FACSCali~ L     8b59d~ FALSE     &lt;NA&gt;  &lt;NA&gt;      0       </span>
+<span class="co">#&gt; 13 2572~ 2007100~ FACSCali~ L     40838~ FALSE     &lt;NA&gt;  &lt;NA&gt;      0       </span>
+<span class="co">#&gt; 14 2572~ 2007100~ FACSCali~ L     a2da5~ FALSE     &lt;NA&gt;  &lt;NA&gt;      0       </span>
+<span class="co">#&gt; 15 2572~ 2007100~ FACSCali~ L     123ef~ FALSE     &lt;NA&gt;  &lt;NA&gt;      0       </span>
+<span class="co">#&gt; # ... with 35 more variables: experimentId &lt;chr&gt;, sampleName &lt;chr&gt;,</span>
+<span class="co">#&gt; #   fcsFileVersion &lt;chr&gt;, dataType &lt;chr&gt;, tubeName &lt;chr&gt;,</span>
+<span class="co">#&gt; #   applyCompensation &lt;chr&gt;, fileSize &lt;chr&gt;, detectedCytometer &lt;chr&gt;,</span>
+<span class="co">#&gt; #   wellId &lt;chr&gt;, plateId &lt;chr&gt;, plateName &lt;chr&gt;, category &lt;chr&gt;,</span>
+<span class="co">#&gt; #   channelCount &lt;chr&gt;, createdAt &lt;chr&gt;, updatedAt &lt;chr&gt;, dataStart &lt;chr&gt;,</span>
+<span class="co">#&gt; #   dataEnd &lt;chr&gt;, acquisitionStart &lt;chr&gt;, acquisitionEnd &lt;chr&gt;,</span>
+<span class="co">#&gt; #   expFile &lt;chr&gt;, operatorName &lt;chr&gt;, operatingSystem &lt;chr&gt;,</span>
+<span class="co">#&gt; #   creatorSoftware &lt;chr&gt;, experimentDate &lt;chr&gt;, experimentName &lt;chr&gt;,</span>
+<span class="co">#&gt; #   exportTime &lt;chr&gt;, exportUser &lt;chr&gt;, windowExtension &lt;chr&gt;,</span>
+<span class="co">#&gt; #   totalEvents &lt;chr&gt;, timeStep &lt;chr&gt;, analysisStart &lt;chr&gt;,</span>
+<span class="co">#&gt; #   analysisEnd &lt;chr&gt;, supplementalStart &lt;chr&gt;, supplementalEnd &lt;chr&gt;,</span>
+<span class="co">#&gt; #   instrument &lt;chr&gt;</span></code></pre></div>
+<p>Let’s look at each:</p>
+<div id="fcs-files" class="section level3">
+<h3>FCS files</h3>
+<p>The <code>fcs_files</code> object in <code>exp_info</code> a large tibble, with one row for each fcs file in the experiment and a number of columns with information about each file. The two columns that will be of most interest are: 1) the <code>id</code> column, which is the internal identifier that cytobank uses for each fcs file, and 2) the <code>filename</code>, which is what we actually named the file at the cytometer.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(exp_info<span class="op">$</span>fcs_files<span class="op">$</span>expFile)
+<span class="co">#&gt; [1] &quot;20071001-U937.001&quot; &quot;20071001-U937.002&quot; &quot;20071001-U937.003&quot;</span>
+<span class="co">#&gt; [4] &quot;20071001-U937.004&quot; &quot;20071001-U937.005&quot; &quot;20071001-U937.006&quot;</span>
+exp_info<span class="op">$</span>sampletags
+<span class="co">#&gt; # A tibble: 15 x 13</span>
+<span class="co">#&gt;    `FCS Filename` Conditions Doses `Doses Numeric ~ `Doses Units`</span>
+<span class="co">#&gt;    &lt;chr&gt;          &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;            &lt;chr&gt;        </span>
+<span class="co">#&gt;  1 20071001-u937~ Unstim     &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;         </span>
+<span class="co">#&gt;  2 20071001-u937~ IL-4       &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;         </span>
+<span class="co">#&gt;  3 20071001-u937~ IFNg       &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;         </span>
+<span class="co">#&gt;  4 20071001-u937~ IL-4 + IF~ &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;         </span>
+<span class="co">#&gt;  5 20071001-u937~ G-CSF      &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;         </span>
+<span class="co">#&gt;  6 20071001-u937~ IFN Type I &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;         </span>
+<span class="co">#&gt;  7 20071001-u937~ IL-6       &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;         </span>
+<span class="co">#&gt;  8 20071001-u937~ Unstim     &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;         </span>
+<span class="co">#&gt;  9 20071001-u937~ IL-4       &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;         </span>
+<span class="co">#&gt; 10 20071001-u937~ IFNg       &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;         </span>
+<span class="co">#&gt; 11 20071001-u937~ IL-4 + IF~ &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;         </span>
+<span class="co">#&gt; 12 20071001-u937~ G-CSF      &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;         </span>
+<span class="co">#&gt; 13 20071001-u937~ IFN Type I &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;         </span>
+<span class="co">#&gt; 14 20071001-u937~ IL-6       &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;         </span>
+<span class="co">#&gt; 15 20071001-u937~ &lt;NA&gt;       &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;         </span>
+<span class="co">#&gt; # ... with 8 more variables: Timepoints &lt;chr&gt;, Individuals &lt;chr&gt;, `Plate</span>
+<span class="co">#&gt; #   Shape` &lt;chr&gt;, `Sample Type` &lt;chr&gt;, `Plate Row` &lt;chr&gt;, `Plate</span>
+<span class="co">#&gt; #   Column` &lt;chr&gt;, Plate &lt;chr&gt;, `FCS File Category` &lt;chr&gt;</span></code></pre></div>
+</div>
+<div id="sample-tags" class="section level3">
+<h3>Sample Tags</h3>
+<p>Sample tags contain annotations for each file that assigns them to conditions. In this case, the samples have been tagged by condition, but no other sample tags.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(exp_info<span class="op">$</span>sampletags)
+<span class="co">#&gt; # A tibble: 6 x 13</span>
+<span class="co">#&gt;   `FCS Filename` Conditions Doses `Doses Numeric ~ `Doses Units` Timepoints</span>
+<span class="co">#&gt;   &lt;chr&gt;          &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;            &lt;chr&gt;         &lt;chr&gt;     </span>
+<span class="co">#&gt; 1 20071001-u937~ Unstim     &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;          &lt;NA&gt;      </span>
+<span class="co">#&gt; 2 20071001-u937~ IL-4       &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;          &lt;NA&gt;      </span>
+<span class="co">#&gt; 3 20071001-u937~ IFNg       &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;          &lt;NA&gt;      </span>
+<span class="co">#&gt; 4 20071001-u937~ IL-4 + IF~ &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;          &lt;NA&gt;      </span>
+<span class="co">#&gt; 5 20071001-u937~ G-CSF      &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;          &lt;NA&gt;      </span>
+<span class="co">#&gt; 6 20071001-u937~ IFN Type I &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;          &lt;NA&gt;      </span>
+<span class="co">#&gt; # ... with 7 more variables: Individuals &lt;chr&gt;, `Plate Shape` &lt;chr&gt;,</span>
+<span class="co">#&gt; #   `Sample Type` &lt;chr&gt;, `Plate Row` &lt;chr&gt;, `Plate Column` &lt;chr&gt;,</span>
+<span class="co">#&gt; #   Plate &lt;chr&gt;, `FCS File Category` &lt;chr&gt;</span></code></pre></div>
+<p>One thing we may want to do is download FCS files that have been tagged. To do that we’ll need to find the right IDs. Here’s quick example showing how to do that:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fcs.ids &lt;-<span class="st"> </span>exp_info<span class="op">$</span>fcs_files <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">left_join</span>(exp_info<span class="op">$</span>sampletags, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;filename&quot;</span> =<span class="st"> &quot;FCS Filename&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Conditions)) <span class="op">%&gt;%</span>
+<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(id, filename, Conditions)
+
+fcs.ids<span class="op">$</span>id
+<span class="co">#&gt;  [1] &quot;2572360&quot; &quot;2572361&quot; &quot;2572362&quot; &quot;2572363&quot; &quot;2572364&quot; &quot;2572365&quot; &quot;2572366&quot;</span>
+<span class="co">#&gt;  [8] &quot;2572367&quot; &quot;2572368&quot; &quot;2572369&quot; &quot;2572370&quot; &quot;2572371&quot; &quot;2572372&quot; &quot;2572373&quot;</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+fcs.zip.path &lt;-<span class="st"> </span><span class="kw">fcs_files.download_zip</span>(cyto_session, experiment.id, fcs.ids<span class="op">$</span>id, 
+                       <span class="dt">directory =</span> <span class="kw">file.path</span>(package.dir, <span class="st">&quot;data&quot;</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fcs.zip.path &lt;-<span class="st"> &quot;C:/Users/benja/OneDrive/cytotidyr/data/experiment_75861_fcs_files.zip&quot;</span>
+fcs.unzipped &lt;-<span class="st"> </span><span class="kw">unzip</span>(fcs.zip.path, <span class="dt">exdir =</span> <span class="kw">file.path</span>(package.dir, <span class="st">&quot;data&quot;</span>))
+
+myflowSet &lt;-<span class="st"> </span><span class="kw">read.flowSet</span>(fcs.unzipped)
+myflowSet.list &lt;-<span class="st"> </span><span class="kw">as.list</span>(myflowSet<span class="op">@</span>frames)</code></pre></div>
+</div>
+<div id="compensations" class="section level3">
+<h3>Compensations</h3>
+<p>With multicolor fluorescence flow cytometry it is critical to apply a ‘compensation’ to the data to correct for spillover from adjacent channels. Oftentimes a compensation matrix will be calculated and stored in the fcs file at the time the sample is acquired. Other times it may be necessary to adjust the compensation matrices after the fact within cytobank. Currently cytotidyr only retrieves the compensation matrices that are explicitly defined within cytobank, but we can use the base functionality to retrieve the comp matrix for a specific file.</p>
+<p>Unfortunately, this is an older FCS file and it does not contain its compensation matrix internally. I’ve created an empty matrix in cytobank for demo purposes that we’ll use here.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">exp_info<span class="op">$</span>compensations<span class="op">$</span><span class="st">`</span><span class="dt">Identity Matrix</span><span class="st">`</span>
+<span class="co">#&gt; $id</span>
+<span class="co">#&gt; [1] 15822</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $experiment_id</span>
+<span class="co">#&gt; [1] 75861</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $created_at</span>
+<span class="co">#&gt; [1] &quot;2018-10-17T21:31:38Z&quot;</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $updated_at</span>
+<span class="co">#&gt; [1] &quot;2018-10-17T21:31:49Z&quot;</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $compensation_matrix</span>
+<span class="co">#&gt;       FL1-H FL2-H FL3-H FL1-A FL4-H</span>
+<span class="co">#&gt; FL1-H     1     0     0     0     0</span>
+<span class="co">#&gt; FL2-H     0     1     0     0     0</span>
+<span class="co">#&gt; FL3-H     0     0     1     0     0</span>
+<span class="co">#&gt; FL1-A     0     0     0     1     0</span>
+<span class="co">#&gt; FL4-H     0     0     0     0     1</span>
+comp.matrix &lt;-<span class="st"> </span>exp_info<span class="op">$</span>compensations<span class="op">$</span><span class="st">`</span><span class="dt">Identity Matrix</span><span class="st">`</span><span class="op">$</span>compensation_matrix
+
+myflowSet.compensated &lt;-<span class="st"> </span><span class="kw">lapply</span>(myflowSet.list, compensate, comp.matrix)</code></pre></div>
+</div>
+<div id="scales" class="section level3">
+<h3>Scales</h3>
+<p>Scales and panels are combined into one object in exp_info as <code>scales</code>. This may change in future versions of cytotidyr. To apply scales we’ll use the <code>apply_scales</code> function which is also part of cytotidyr. Currently <code>apply_scales</code> accepts flowFrames and tibbles/data.frames as inputs. In the future, flowSets may also be supported.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myflowSet.scaled &lt;-<span class="st"> </span><span class="kw">lapply</span>(myflowSet.compensated, apply_scales, exp_info) 
+
+<span class="co">#inspect the first flowframe in the flowSet</span>
+<span class="kw">summary</span>(<span class="kw">exprs</span>(myflowSet.scaled[[<span class="dv">1</span>]]))
+<span class="co">#&gt;      FSC-H            SSC-H            FL1-H           FL2-H        </span>
+<span class="co">#&gt;  Min.   :  63.0   Min.   :0.2305   Min.   :0.000   Min.   :0.00000  </span>
+<span class="co">#&gt;  1st Qu.: 436.0   1st Qu.:1.4844   1st Qu.:1.637   1st Qu.:0.00000  </span>
+<span class="co">#&gt;  Median : 489.0   Median :1.5742   Median :1.734   Median :0.00000  </span>
+<span class="co">#&gt;  Mean   : 497.7   Mean   :1.5752   Mean   :1.723   Mean   :0.01228  </span>
+<span class="co">#&gt;  3rd Qu.: 565.0   3rd Qu.:1.6562   3rd Qu.:1.832   3rd Qu.:0.00000  </span>
+<span class="co">#&gt;  Max.   :1023.0   Max.   :3.4336   Max.   :3.996   Max.   :3.78125  </span>
+<span class="co">#&gt;      FL3-H              FL1-A             FL4-H       </span>
+<span class="co">#&gt;  Min.   :0.000000   Min.   :   0.00   Min.   :0.0000  </span>
+<span class="co">#&gt;  1st Qu.:0.000000   1st Qu.:   8.00   1st Qu.:0.7891  </span>
+<span class="co">#&gt;  Median :0.000000   Median :  12.00   Median :0.9727  </span>
+<span class="co">#&gt;  Mean   :0.004259   Mean   :  12.57   Mean   :0.9321  </span>
+<span class="co">#&gt;  3rd Qu.:0.000000   3rd Qu.:  16.00   3rd Qu.:1.1172  </span>
+<span class="co">#&gt;  Max.   :2.804688   Max.   :1023.00   Max.   :3.6875</span></code></pre></div>
+</div>
+<div id="gating-on-populations" class="section level3">
+<h3>Gating on Populations</h3>
+<p>One of the common preprocessing steps in flow cytometry is ‘gating’ to select subsets of cells. Populations are defined by a series of gates which are applied to the transformed data. At a minimum, gating is used to separate intact cells from debris, but often times more specific gates for single cells, live cells, or specific cell subsets are defined.</p>
+<p>Here we’ll gate on live cells.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ff.<span class="dv">1</span> &lt;-<span class="st"> </span>cytotidyr<span class="op">::</span><span class="kw">gate_population</span>(myflowSet.scaled[[<span class="dv">1</span>]],
+                                   <span class="dt">population =</span> <span class="st">&quot;Live Cells&quot;</span>,
+                                   exp_info,
+                                   <span class="dt">apply_scales =</span> <span class="ot">FALSE</span>)
+<span class="co">#&gt; # A tibble: 2 x 5</span>
+<span class="co">#&gt;   name           n percent_total percent_parent parent </span>
+<span class="co">#&gt;   &lt;chr&gt;      &lt;int&gt;         &lt;dbl&gt;          &lt;dbl&gt; &lt;chr&gt;  </span>
+<span class="co">#&gt; 1 ungated    30876         100            100   &quot;&quot;     </span>
+<span class="co">#&gt; 2 Live Cells 29116          94.3           94.3 ungated</span>
+
+myflowSet.gated &lt;-<span class="st"> </span><span class="kw">lapply</span>(
+  myflowSet.scaled,
+  gate_population,
+  <span class="dt">population =</span> <span class="st">&quot;Live Cells&quot;</span>,
+  exp_info,
+  <span class="dt">apply_scales =</span> <span class="ot">FALSE</span>,
+  <span class="dt">verbose =</span> <span class="ot">FALSE</span>
+  )</code></pre></div>
+</div>
+<div id="panels" class="section level3">
+<h3>Panels</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mydata.list &lt;-<span class="st"> </span><span class="kw">lapply</span>(myflowSet.gated, <span class="cf">function</span>(ff){
+  
+  <span class="kw">as.tibble</span>(<span class="kw">exprs</span>(ff)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">filename =</span> <span class="kw">description</span>(ff)<span class="op">$</span>GUID)}
+)
+
+panel.lut &lt;-<span class="st"> </span><span class="kw">lapply</span>(exp_info<span class="op">$</span>scales,
+                    <span class="cf">function</span>(panel) {
+                    <span class="kw">tibble</span>(<span class="dt">id =</span> <span class="kw">as.character</span>(panel<span class="op">$</span>fcsFileIDs),
+                    <span class="dt">panel =</span> panel<span class="op">$</span>name)
+                    }) <span class="op">%&gt;%</span>
+<span class="st">                    </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span>
+<span class="st">                    </span><span class="kw">left_join</span>(exp_info<span class="op">$</span>fcs_files) <span class="op">%&gt;%</span>
+<span class="st">                    </span>dplyr<span class="op">::</span><span class="kw">select</span>(filename, panel)
+<span class="co">#&gt; Joining, by = &quot;id&quot;</span>
+panel.lut
+<span class="co">#&gt; # A tibble: 15 x 2</span>
+<span class="co">#&gt;    filename          panel  </span>
+<span class="co">#&gt;    &lt;chr&gt;             &lt;chr&gt;  </span>
+<span class="co">#&gt;  1 20071001-u937.001 Panel 1</span>
+<span class="co">#&gt;  2 20071001-u937.002 Panel 1</span>
+<span class="co">#&gt;  3 20071001-u937.003 Panel 1</span>
+<span class="co">#&gt;  4 20071001-u937.004 Panel 1</span>
+<span class="co">#&gt;  5 20071001-u937.005 Panel 1</span>
+<span class="co">#&gt;  6 20071001-u937.006 Panel 1</span>
+<span class="co">#&gt;  7 20071001-u937.007 Panel 1</span>
+<span class="co">#&gt;  8 20071001-u937.008 Panel 2</span>
+<span class="co">#&gt;  9 20071001-u937.009 Panel 2</span>
+<span class="co">#&gt; 10 20071001-u937.010 Panel 2</span>
+<span class="co">#&gt; 11 20071001-u937.011 Panel 2</span>
+<span class="co">#&gt; 12 20071001-u937.012 Panel 2</span>
+<span class="co">#&gt; 13 20071001-u937.013 Panel 2</span>
+<span class="co">#&gt; 14 20071001-u937.014 Panel 2</span>
+<span class="co">#&gt; 15 20071001-u937.015 Panel 3</span>
+mydata.tidy &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(mydata.list) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">left_join</span>(panel.lut)
+<span class="co">#&gt; Joining, by = &quot;filename&quot;</span>
+
+mydata.panel1 &lt;-<span class="st"> </span>mydata.tidy <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(panel <span class="op">==</span><span class="st"> &quot;Panel 1&quot;</span>)
+mydata.panel1 &lt;-<span class="st"> </span><span class="kw">apply_panel</span>(mydata.panel1, exp_info, <span class="st">&quot;Panel 1&quot;</span>)
+
+mydata.panel2 &lt;-<span class="st"> </span>mydata.tidy <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(panel <span class="op">==</span><span class="st"> &quot;Panel 2&quot;</span>)
+mydata.panel2 &lt;-<span class="st"> </span><span class="kw">apply_panel</span>(mydata.panel2, exp_info, <span class="st">&quot;Panel 2&quot;</span>)</code></pre></div>
+</div>
+<div id="why-go-through-all-this-trouble" class="section level3">
+<h3>Why go through all this trouble?</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mydata.panel1.summary &lt;-<span class="st"> </span>mydata.panel1 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">left_join</span>(exp_info<span class="op">$</span>sampletags, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;filename&quot;</span> =<span class="st"> &quot;FCS Filename&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(channel, value, <span class="st">`</span><span class="dt">p-Stat1-Ax647</span><span class="st">`</span>, <span class="st">`</span><span class="dt">p-Stat6-Ax488</span><span class="st">`</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(channel, value, panel, Conditions) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(Conditions, channel,panel) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">MFI =</span> <span class="kw">median</span>(value))
+
+mydata.panel2.summary &lt;-<span class="st"> </span>mydata.panel2 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">left_join</span>(exp_info<span class="op">$</span>sampletags, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;filename&quot;</span> =<span class="st"> &quot;FCS Filename&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(channel, value, <span class="st">`</span><span class="dt">p-Stat3-Ax488</span><span class="st">`</span>, <span class="st">`</span><span class="dt">p-Stat5-Ax647</span><span class="st">`</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(channel, value, panel, Conditions) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(Conditions, channel, panel) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">MFI =</span> <span class="kw">median</span>(value))
+
+mydata.summary &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(mydata.panel1.summary, mydata.panel2.summary)
+mydata.summary.unstim &lt;-<span class="st"> </span>mydata.summary <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(Conditions <span class="op">==</span><span class="st"> &quot;Unstim&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">rename</span>(<span class="dt">MFI.unstim =</span> MFI) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>Conditions)
+
+mydata.tr &lt;-<span class="st"> </span>mydata.summary <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">left_join</span>(mydata.summary.unstim) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">MFI.transformed.ratio =</span> MFI <span class="op">-</span><span class="st"> </span>MFI.unstim) 
+<span class="co">#&gt; Joining, by = c(&quot;channel&quot;, &quot;panel&quot;)</span>
+scale.max &lt;-<span class="st"> </span><span class="kw">max</span>(<span class="kw">abs</span>(mydata.tr<span class="op">$</span>MFI.transformed.ratio))
+
+mydata.tr <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span> channel, <span class="dt">y =</span> Conditions, <span class="dt">fill =</span> MFI.transformed.ratio)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_tile</span>(<span class="dt">col =</span> <span class="st">&quot;grey50&quot;</span>, <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_x_discrete</span>(<span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>), <span class="dt">position =</span> <span class="st">&quot;top&quot;</span>, <span class="dt">name =</span> <span class="ot">NULL</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_y_discrete</span>(<span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span>scico<span class="op">::</span><span class="kw">scale_fill_scico</span>(<span class="dt">palette =</span> <span class="st">&quot;lisbon&quot;</span>, 
+                          <span class="dt">limits =</span> <span class="kw">c</span>(<span class="op">-</span>scale.max, scale.max), 
+                          <span class="dt">guide =</span> <span class="kw">guide_colorbar</span>(<span class="dt">frame.colour =</span> <span class="st">&quot;black&quot;</span>)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">theme_minimal</span>()<span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">0</span>), 
+        <span class="dt">axis.text =</span> <span class="kw">element_text</span>(<span class="dt">color =</span> <span class="st">&quot;black&quot;</span>), <span class="dt">strip.placement =</span> <span class="st">&quot;outside&quot;</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">facet_grid</span>(.<span class="op">~</span>panel, <span class="dt">space =</span> <span class="st">'free'</span>, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>, <span class="dt">switch =</span> <span class="st">&quot;x&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggsave</span>(<span class="st">'fig.svg'</span>)
+<span class="co">#&gt; Saving 4 x 3.5 in image</span></code></pre></div>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
