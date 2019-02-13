@@ -4,8 +4,6 @@
 #' @param gate A flowCore gate object, as defined manually or by
 #'  \code{\link{define_gates}}
 #' @return A flow frame containing the data which lie within the selected gate
-#' @seealso \code{\link[flowCore:Subset]{Subset}}
-#' @seealso \code{\link[flowCore:filter]{filter}}
 #' @importFrom flowCore Subset filter
 
 gatein <- function(data, gate) { #this function subsets the data within the specified gate

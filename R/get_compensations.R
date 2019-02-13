@@ -1,10 +1,11 @@
 #' A simple function for dowloading compensation matricies from Cytobank
 #'
-#' @param cyto_session A cytobank session created by \code{\link[CytobankAPI]}{autheticate}
+#' @param cyto_session A cytobank session created by \code{\link[CytobankAPI:authentication]{authenticate}}
 #' @param exp_id The experiment ID, found in the URL of the experiment
 #' @return A compensation matrix (if one exists).
-#' @seealso \code{\link[CytobankAPI]{compensations.list}}
+#' @seealso \code{\link[CytobankAPI:compensations]{compensations.list}}
 #' @import CytobankAPI
+
 
 get_compensations <- function(cyto_session, exp_id) {
   return(CytobankAPI::compensations.list(cyto_session, exp_id, output = 'default', timeout = 30))

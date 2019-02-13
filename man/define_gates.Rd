@@ -17,8 +17,3 @@ A flow frame containing the data which lie within the selected gate
 \description{
 A function that takes gates and scales returned by cytobank and generates flowcore compabitible gates
 }
-\seealso{
-\code{\link[flowCore:Subset]{Subset}}
-
-\code{\link[flowCore:filter]{filter}}
-}
