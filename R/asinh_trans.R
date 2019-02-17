@@ -35,7 +35,6 @@ asinh_trans = function(cofactor) {
     log.ticks.minor.0 <- rep(10^seq(linear.ticks.max.10+2, 10, 1), each = 9)
 
     log.ticks.minor <- rep(1:9,length(log.ticks.minor.0)/9)*log.ticks.minor.0
-    print(log.ticks.minor[1:10])
     breaks <- c(0, log.ticks.major, -log.ticks.major, cofactor, -cofactor)
     labels <- c(breaks,
                 rep("", length(linear.ticks)*2),
@@ -61,6 +60,7 @@ asinh_trans = function(cofactor) {
   scales::trans_new("asinh", transform, inverse, breaks)
 }
 
+scales::pseudo_log_trans
 
 
 # asinh_trans = function(cofactor) {
