@@ -1,5 +1,8 @@
 #source(file.path(appDir, "R", "launch.R"))
 source(file.path(appDir, "R", "mod_api.R"))
+source(file.path(appDir, "R", "mod_experiment_table.R"))
+source(file.path(appDir, "R", "mod_importbyfcsfile.R"))
+
 # source(file.path(appDir, "R", "launch.R"))
 # source(file.path(appDir, "R", "launch.R"))
 #
