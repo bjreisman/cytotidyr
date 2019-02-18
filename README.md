@@ -34,7 +34,7 @@ Say what the step will be
 
 ```
 #install.packages("devtools")
-devtools::install_github("bjreisman/debarcoder")
+devtools::install_github("bjreisman/cytotidyr")
 ```
 
 
