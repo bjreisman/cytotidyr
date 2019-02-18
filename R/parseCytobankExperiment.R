@@ -27,7 +27,6 @@ parseCytobankExperiment <- function(acspath){
   experiment_yaml <- yaml::read_yaml(yamlpath)
 
   ## Extract the FCS file information ------------------------------------------
- # print("line37")
   fcs.file.i <- experiment_yaml$fcsFiles[[9]]
 
   fcs.file.tibble <-
@@ -94,7 +93,6 @@ parseCytobankExperiment <- function(acspath){
   gatingML_path <- unzippath[grep(unzippath, pattern = "_gate_")]
   gates <- CytoML::read.gatingML.cytobank(gatingML_path)
 
-  #comps <- get_compensations(cyto_session, exp_id)
   comps <- lapply(experiment_yaml$compensations, function(comp.i){
     mat.i<- do.call(rbind, comp.i$matrix)
     colnames(mat.i)   <- comp.i$channelShortNames
