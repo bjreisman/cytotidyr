@@ -1,5 +1,5 @@
 # Cytotidyr
-![Logo](https://raw.githubusercontent.com/bjreisman/cytotidyr/master/vignettes/figures/cytotidyrlogo.png)
+![Logo](https://raw.githubusercontent.com/bjreisman/cytotidyr/master/vignettes/figures/cytotidyrlogo2.png)
 
 Cytotidyr is a wrapper for the CytobankAPI package which allows for all steps of a cytobank preprocessing workflow to be reproduced in R, such that you can go from data to data on cytobank to a flowFrame or data.frame with all your preprocessed events as quickly as possible. It also includes a simple shiny application for converting data on cytobank into csv files, which can easily be adapted to other applications. 
 
