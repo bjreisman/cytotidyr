@@ -1,4 +1,5 @@
 #' A wrapper for multiple functions that fetches experiment info from cytobank
+#' Soft Depreciated as of version 0.0.1.100, use fetchExperimentInfo in the future...
 #'
 #' @param cyto_session A cytobank session created by \code{\link[CytobankAPI:authentication]{authenticate}}
 #' @param exp_id The experiment ID, found in the URL of the experiment

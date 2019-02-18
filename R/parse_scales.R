@@ -12,7 +12,7 @@ parse_scales <- function(scales_tbl, inverse = F){
       cofactor <- as.numeric(scales_row["cofactor"])
       trans <- asinh_trans(cofactor)
     } else if (scales_row["scaleType"] == 2){
-      trans <- log10_trans()
+      trans <- scales::log10_trans()
     } else{
       trans <- scales::identity_trans()
     }
