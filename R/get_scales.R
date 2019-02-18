@@ -10,15 +10,14 @@ get_scales <- function(cyto_session, exp_id) {
   scales <- CytobankAPI::scales.list(cyto_session,
                                      exp_id,
                                      output = "default")
-
   scales_df <- as.data.frame(lapply(scales, function(X) unname(unlist(X))))
-
   mypanels <- CytobankAPI::panels.list(cyto_session,
                                       exp_id,
                                       output = "default")
 
   panel.list <- vector('list', length = length(mypanels))
   names(panel.list) <- names(mypanels)
+
   for(i in seq(length(mypanels))){
     panel.i <- mypanels[[i]][['channels']]
     panel.i_df <- as.data.frame(lapply(panel.i, function(X) unname(unlist(X))))
@@ -32,6 +31,17 @@ get_scales <- function(cyto_session, exp_id) {
                            fcsFileIDs = mypanels[[i]][['fcs_files']])
   }
 
+  shortNameId_lut <-
+    lapply(panel.list, function(panel.list.i) {
+      panel.list.i[["scales"]] %>%
+        select(normalizedShortNameId, shortName)}) %>%
+    bind_rows() %>%
+    group_by(normalizedShortNameId) %>%
+    slice(1)
 
-  return(panel.list)
+  scales_output <- scales_df %>%
+    left_join(shortNameId_lut, by = "normalizedShortNameId") %>%
+    select(shortName, cofactor, maximum, minimum, scaleType)
+
+  return(scales_output)
 }

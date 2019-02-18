@@ -7,13 +7,18 @@
 apply_scales(input, exp_info, inverse = FALSE)
 }
 \arguments{
-\item{cyto_session}{A cytobank session created by \code{\link[CytobankAPI:authentication]{CytobankAPI:authenticate}}}
+\item{cyto_session}{A cytobank session created by \code{\link[CytobankAPI]}{autheticate}}
 
 \item{exp_id}{The experiment ID, found in the URL of the experiment}
 }
 \value{
-A list of populations and how they are defined by gate
+A list of populations and how they are defined by gates
 }
 \description{
 A simple wrapper for the population.list functions in cytobankAPI
+}
+\seealso{
+\code{\link[flowCore]{Subset}}
+
+\code{\link[flowCore]{filter}}
 }

@@ -2,7 +2,8 @@
 % Please edit documentation in R/get_experimentinfo.R
 \name{get_experimentinfo}
 \alias{get_experimentinfo}
-\title{A wrapper for multiple functions that fetches experiment info from cytobank}
+\title{A wrapper for multiple functions that fetches experiment info from cytobank
+Soft Depreciated as of version 0.0.1.100, use fetchExperimentInfo in the future...}
 \usage{
 get_experimentinfo(cyto_session, exp_id)
 }
@@ -29,4 +30,5 @@ A list of experiment information including
 }
 \description{
 A wrapper for multiple functions that fetches experiment info from cytobank
+Soft Depreciated as of version 0.0.1.100, use fetchExperimentInfo in the future...
 }
