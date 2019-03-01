@@ -14,7 +14,7 @@
 #' @export
 #' @import CytobankAPI
 
-
+#exp_id <- experiment.id
 get_experimentinfo <- function(cyto_session, exp_id){
   fcs.file.tibble <- get_fcsfilelut(cyto_session, exp_id)
   message(paste(nrow(fcs.file.tibble), ' FCS files found'))
@@ -25,8 +25,8 @@ get_experimentinfo <- function(cyto_session, exp_id){
 
   gates.raw <- get_gates(cyto_session, exp_id)
   gates.defined <- define_gates(gates.raw, scales$`Panel 1`$scales)
-  message(paste0(length(gates.defined), ' gates found\n'))
-
+  message(paste0(length(gates.defined), ' gates found'))
+  #unlist(gates.raw$name)
   sample.tag.path <- sample_tags.download(cyto_session, exp_id)
   sampletags <- suppressMessages(read.delim(sample.tag.path))
   file.remove(sample.tag.path)
@@ -48,14 +48,20 @@ get_experimentinfo <- function(cyto_session, exp_id){
                  paste(paste0("\t",   unlist(populations$name)),
                        collapse = "\n")))
 
-  panels <- lapply(scales,
-                      function(panel) {
-                        tibble(id = as.character(panel$fcsFileIDs),
-                               panel = panel$name)
-                      }) %>%
-    bind_rows() %>%
-    left_join(fcs.file.tibble) %>%
-    dplyr::select(filename, panel)
+
+
+  mypanels <- CytobankAPI::panels.list(cyto_session,
+                                       exp_id,
+                                       output = "default")
+  panels <- lapply(mypanels, '[[', 3)
+
+  fcs_to_panel <- lapply(mypanels, '[[', 2) %>%
+    stack()
+  colnames(fcs_to_panel) <- c('originalId', 'Panel')
+
+  fcs.file.tibble <- fcs.file.tibble %>%
+    mutate(originalId = as.numeric(originalId)) %>%
+    left_join(fcs_to_panel)
 
   return(list("fcs_files" = fcs.file.tibble,
               "sampletags" = sampletags,
