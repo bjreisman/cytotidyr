@@ -1,3 +1,5 @@
+#' Plots points while computing a kernel density estimate
+
 #' @export
 #' @param n number of grid points in each direction
 #' @param h Bandwidth (vector of length two). If `NULL`, estimated
@@ -36,15 +38,13 @@ stat_density_point_2d <- function(mapping = NULL, data = NULL,
 }
 
 #' @export
-#' @rdname geom_density_2d
 #' @usage NULL
 stat_densitypoint2d <- stat_density_point_2d
-
-#' @rdname ggplot2-ggproto
+#' @import ggplot2
 #' @format NULL
 #' @usage NULL
 #' @export
-StatDensityPoint2d <- ggproto("StatDensityPoint2d", Stat,
+StatDensityPoint2d <- ggplot2::ggproto("StatDensityPoint2d", Stat,
   default_aes = aes(colour = stat(density), size = 0.5),
 
   required_aes = c("x", "y"),
