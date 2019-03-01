@@ -91,6 +91,8 @@ parseCytobankExperiment <- function(acspath){
   ### Parse the scales into a Transformer list accepted by flowWorkspace--------
   transforms <- parse_scales(scales)
   transforms.i <- transforms[[1]]
+
+  ## didn't end up using this function, here, but may be useful elsewhere
   invertTransformerList <- function(transforms) {
     lapply(transforms, function(transforms.i) {
       forward <- transforms.i$transform

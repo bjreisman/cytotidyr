@@ -12,5 +12,7 @@ invertTransformerList <- function(transforms) {
     transforms.i$name <- paste0("inverse.", transforms.i$name)
     return(transforms.i)
   })
+  class(transformsInverted) <- c("transformerList", "list")
+
   return(transformsInverted)
 }

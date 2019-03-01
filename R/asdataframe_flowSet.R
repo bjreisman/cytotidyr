@@ -13,6 +13,7 @@ as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = F
     ff.df <- as.data.frame(exprs(ff))
     if(use_longnames == TRUE){
       colnames(ff.df) <- ff@parameters@data$desc
+   #   print(colnames(ff.df))
     }
     if (add_filename == TRUE) {
       ff.df[, "FCS Filename"] <- filename

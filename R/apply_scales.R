@@ -24,8 +24,8 @@ apply_scales <- function(input, exp_info, inverse = FALSE){
   col.order <- colnames(input.tidy)
 
   transform.lut <-
-    exp_info$scales[[1]]$scales %>%
-    select(shortName, cofactor, scaleType) %>%
+    exp_info[['scales']] %>%
+    dplyr::select(shortName, cofactor, scaleType) %>%
     gather(key, value, cofactor, scaleType) %>%
     spread(shortName, value) %>%
     column_to_rownames("key")
