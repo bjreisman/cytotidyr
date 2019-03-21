@@ -3,9 +3,7 @@ title: "Basic Cytotidyr Workflow"
 author: "Benjmain Reisman"
 date: "`r Sys.Date()`"
 output:
-  html_document:
-    df_print: paged
-    keep_md: yes
+  md_document:
 
 editor_options:
   chunk_output_type: console
@@ -13,18 +11,18 @@ vignette: |
   %\VignetteIndexEntry{Introduction to Cytotidyr} %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r setup, include = FALSE}
+```{r setup, include = TRUE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  cache = TRUE,
+  cache = FALSE,
   dev = "png",
   dpi = 150,
   fig.path = "figures/",
   fig.width = 4,
   fig.height = 3.5,
-  fig.align = 'center'
-)
+  fig.align = 'center',
+  output_file = "./minimalexample.md")
 library(cytotidyr)
 library(flowCore)
 library(CytobankAPI)
@@ -42,7 +40,8 @@ _The goal of cytotidyr is to integrate data-preprocessing done in cytobank with 
 The cytobankAPI package provides a method for importing cytobank endpoints into R, but applying those endpoints to raw data to reproduce the data preprocessing done in cytobank is less than straight forward.
 
 Cytotidyr provides a set of function for applying the following preprocessing steps from cytobank:
-  - Data scaling
+
+- Data scaling
 - Panel assignment
 - Compensation
 - Gating on populations
@@ -82,13 +81,13 @@ myflowset <- read.flowSet(fcspath_unzipped)
 ```{r reading things in, echo=TRUE, eval=TRUE}
 exp_info <- readRDS(system.file("extdata", "exp_info_sample.rds", package = "cytotidyr"))
 #exp_info$transforms
+#exp_info$transforms
 myflowset <- read.flowSet(system.file("extdata",
                          c("Donor 2 mem post-sort.fcs", "Donor 2 pre-sort.fcs" ),
                          package = "cytotidyr"))
 ```
 
 ```{r tidying}
-
 mygatingset <- GatingSet(myflowset) # convert to a gatingset to use flowWorkspace
 mygatingset <- flowWorkspace::transform(mygatingset, exp_info$transforms) #transform the data
 markernames(mygatingset) <- exp_info$panels$`Panel 1` #apply the panels

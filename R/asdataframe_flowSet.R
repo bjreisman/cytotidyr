@@ -19,7 +19,7 @@ as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = F
       ff.df[, "FCS Filename"] <- basename(filename)
     }
 
-    if (add_tags == TRUE) {
+    if (add_pData == TRUE) {
       if(ncol(pData(x)) > 1){
         tags.x <- pData(x)[basename(filename),]
         ff.df <- suppressWarnings(cbind(ff.df, tags.x[-1]))
