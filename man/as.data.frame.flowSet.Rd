@@ -5,7 +5,7 @@
 \title{S3 Method for the as.data.frame function to convert a flowset into a dataframe}
 \usage{
 \method{as.data.frame}{flowSet}(x, ..., add_filename = TRUE,
-  use_longnames = FALSE)
+  use_longnames = FALSE, add_pData = TRUE)
 }
 \arguments{
 \item{x}{a flowSet object}

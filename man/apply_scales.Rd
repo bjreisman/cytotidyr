@@ -17,8 +17,3 @@ A list of populations and how they are defined by gates
 \description{
 A simple wrapper for the population.list functions in cytobankAPI
 }
-\seealso{
-\code{\link[flowCore]{Subset}}
-
-\code{\link[flowCore]{filter}}
-}
