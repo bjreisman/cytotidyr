@@ -1,7 +1,6 @@
 #' A simple wrapper for the population.list functions in cytobankAPI
 #'
-#' @param cyto_session A cytobank session created by \code{\link[CytobankAPI]}{autheticate}
-#' @param exp_id The experiment ID, found in the URL of the experiment
+#' @param exp_info cytobank experiment from fetchCytobankExperiment
 #' @return A list of populations and how they are defined by gates
 #' @seealso \code{\link[flowCore]{Subset}}
 #' @seealso \code{\link[flowCore]{filter}}
