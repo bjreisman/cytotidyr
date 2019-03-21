@@ -16,7 +16,20 @@ as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = F
    #   print(colnames(ff.df))
     }
     if (add_filename == TRUE) {
+<<<<<<< HEAD
       ff.df[, "FCS Filename"] <- filename
+=======
+      ff.df[, "FCS Filename"] <- basename(filename)
+    }
+
+    if (add_pData == TRUE) {
+      if(ncol(pData(x)) > 1){
+        tags.x <- pData(x)[basename(filename),]
+        ff.df <- suppressWarnings(cbind(ff.df, tags.x[-1]))
+      } else {
+        warning("No pData found")
+      }
+>>>>>>> 4ba3ab6... removed cache
     }
     return(ff.df)
   }
