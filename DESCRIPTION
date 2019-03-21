@@ -5,7 +5,7 @@ Authors@R: person("Benjamin", "Reisman", email = "benjamin.reisman@vanderbilt.ed
 Description: This package contains a set of functions that are used to convert FCS files stored on Cytobank into a tidy format for downstream analysis in R. In addition to the basic functionality for downloading FCS files, cytotidyr provides a framework for applying compensations, panels, scaling, and gating paramters defined in cytobank to the raw data to faciliate a natural, reproducible workflow from cytobank to R (and back). 
 Depends: R (>= 3.5.1)
 Imports: CytobankAPI, dplyr, flowCore, scales, CytoML, tibble, flowWorkspace
-License: GPL-3
+License: MIT
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
