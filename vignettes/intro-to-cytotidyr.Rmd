@@ -12,8 +12,6 @@ editor_options:
 ---
 
 ```{r setup, include = FALSE}
-
-devtools::install_git
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -66,9 +64,7 @@ _Note that to actually connect run this code, you would need a valid authorizati
 library(CytobankAPI)
 library(cytotidyr)
 token <- "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyM2FlMmNmNDQ2ODQyNGZkNDZmNzMyOTZjYzViYWY2YiIsImV4cCI6MTUzOTkxNzUzOSwidXNlcl9pZCI6ODg1NiwiYXVkIjoiY3l0b2JhbmtfYXBpX3YxX3VzZXJzIiwiaWF0IjoxNTM5ODg4NzM5LCJpc3MiOiJodHRwczovL2NvbW11bml0eS5jeXRvYmFuay5vcmcvIiwibmJmIjoxNTM5ODg4NzM5LCJzdWIiOiJjeXRvYmFua19hcGlfdjEifQ.7pS28qHB4mTM-feDEEIRRqgBKTKHvoKXelj3QHJjeSI"
-?authenticate
-cyto_session <- authenticate("vanderbilt", username = "reismab", 
-                             password = "oligomycin1")
+cyto_session <- authenticate("vanderbilt", auth_token = 'token')
 experiment.id <- 29560
 
 exp_info <- get_experimentinfo(cyto_session = cyto_session, experiment.id)

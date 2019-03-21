@@ -1,0 +1,104 @@
+---
+title: "Basic Cytotidyr Workflow"
+author: "Benjmain Reisman"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+    keep_md: yes
+
+editor_options:
+  chunk_output_type: console
+vignette: |
+  %\VignetteIndexEntry{Introduction to Cytotidyr} %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  cache = TRUE,
+  dev = "png",
+  dpi = 150,
+  fig.path = "figures/",
+  fig.width = 4,
+  fig.height = 3.5,
+  fig.align = 'center'
+)
+library(cytotidyr)
+library(flowCore)
+library(CytobankAPI)
+library(scico)
+library(tidyverse)
+library(flowWorkspace)
+library(CytoML)
+```
+
+
+## What is Cytotidyr?
+
+_The goal of cytotidyr is to integrate data-preprocessing done in cytobank with downstream analysis in R._
+
+The cytobankAPI package provides a method for importing cytobank endpoints into R, but applying those endpoints to raw data to reproduce the data preprocessing done in cytobank is less than straight forward.
+
+Cytotidyr provides a set of function for applying the following preprocessing steps from cytobank:
+  - Data scaling
+- Panel assignment
+- Compensation
+- Gating on populations
+- Sample tagging
+
+With the exception of sample tagging, all of these steps can be applied to flowFrame objects to integrate with analysis pipelines based on flowCore. Alternatively, all steps except for compensation and gating can be applied to tibbles to generate _*tidy data*_ for integration with tidyverse based analysis pipelines.
+
+## Disclaimer
+
+Cytotidyr is currently in development phase. While we have validated it on a number of cytobank experiments, it may not always perform as expected. *Please* make sure to validate that cytotidyr provides the output you expect by comparing any outputs (cell counts, medians, biaxial plots, etc...) to what you see on cytobank.
+
+
+## Experiment Info
+All functions within cytotidyr rely on the the`get_experimentinfo` function, which calls multiple internal functions to obtain the scales, compensations, panels, gates, population hierarchy, and sample tags from cytobank for a given experiment.
+
+
+Let's see the package in action on the ["Welcome to Cytobank - U937 dataset"](https://community.cytobank.org/cytobank/experiments/61#), which is publicly available at ["community.cytobank.org"](community.cytobank.org), as `experiment.id = 61`.
+
+_Note that to actually connect run this code, you would need a valid authorization token and access to the specified experiment. In this case, I needed to clone the experiment to my cytobank community account. For the purposes of this vignette, I've saved the output of the experiment.info function so that it accessible. In practice, it may be worthwhile to save the experiment info object for reproducability purposes._
+```{r echo=TRUE, eval=FALSE}
+
+token <- "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI3YjYyMzIyYmMwZGZiZmFmYzI0ZWQ5NTg2ZDdlOGMzMyIsImV4cCI6MTU1MzE5OTk2MiwidXNlcl9pZCI6MTQ3LCJhdWQiOiJjeXRvYmFua19hcGlfdjFfdXNlcnMiLCJpYXQiOjE1NTMxNzExNjIsImlzcyI6Imh0dHBzOi8vdmFuZGVyYmlsdC5jeXRvYmFuay5vcmcvIiwibmJmIjoxNTUzMTcxMTYyLCJzdWIiOiJjeXRvYmFua19hcGlfdjEifQ.T1Wn-aHTUxppSPw_NODalWgZ2heZL9ALM2g5EhJbSew"
+cyto_session <- authenticate("vanderbilt", auth_token = token)
+experiment.id <- 29564
+
+exp_info <- fetchCytobankExperiment(cyto_session = cyto_session, experiment.id)
+```
+
+```{r read in data, echo = TRUE, eval = FALSE}
+fcspath <- fcs_files.download_zip(cyto_session, experiment.id, exp_info$fcs_files$originalId)
+fcspath_unzipped <- unzip(fcspath)
+myflowset <- read.flowSet(fcspath_unzipped)
+#saveRDS(exp_info, system.file("extdata", "exp_info_sample.rds", package = "cytotidyr"))
+```
+
+```{r reading things in, echo=TRUE, eval=TRUE}
+exp_info <- readRDS(system.file("extdata", "exp_info_sample.rds", package = "cytotidyr"))
+#exp_info$transforms
+myflowset <- read.flowSet(system.file("extdata",
+                         c("Donor 2 mem post-sort.fcs", "Donor 2 pre-sort.fcs" ),
+                         package = "cytotidyr"))
+```
+
+```{r tidying}
+
+mygatingset <- GatingSet(myflowset) # convert to a gatingset to use flowWorkspace
+mygatingset <- flowWorkspace::transform(mygatingset, exp_info$transforms) #transform the data
+markernames(mygatingset) <- exp_info$panels$`Panel 1` #apply the panels
+CytoML::gating(exp_info$gates, mygatingset) #run gating 
+myflowset_preprocessed <- flowWorkspace::getData(mygatingset, "singles") #back to a flowSet
+myflowset_tagged <- tagFlowSet(myflowset_preprocessed, exp_info$sampletags) #apply sampletags
+
+mytidydata <- as.data.frame(myflowset_tagged)
+
+str(mytidydata)
+```
+
+
+
