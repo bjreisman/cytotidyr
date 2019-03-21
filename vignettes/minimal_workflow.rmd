@@ -69,6 +69,7 @@ cyto_session <- authenticate("vanderbilt", auth_token = token)
 experiment.id <- 29564
 
 exp_info <- fetchCytobankExperiment(cyto_session = cyto_session, experiment.id)
+saveRDS(exp_info, "exp_info_sample.rds")
 ```
 
 ```{r read in data, echo = TRUE, eval = FALSE}
