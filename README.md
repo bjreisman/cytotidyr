@@ -19,7 +19,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 Cytotidyr was developed for R 3.6+. In order to fully utilize the features of cytotidyr, you'll need to install and load the flowCore and CytobankAPI pacakges. These are also dependencies, so if you install cytotidyr flowCore and CytobankAPI should be automatically installed. 
-```
+```{r}
 if (!requireNamespace("BiocManager", quietly = TRUE))
 install.packages("BiocManager")
 BiocManager::install("flowCore", version = "3.8")
@@ -33,14 +33,14 @@ A step by step series of examples that tell you how to get a development env run
 
 Say what the step will be
 
-```
+```{r}
 #install.packages("devtools")
 devtools::install_github("bjreisman/cytotidyr")
 ```
 ### Getting Started
 
 First we'll load the dependencies neccessary to run this example:
-  ```
+  ```{r}
 library(cytotidyr)
 library(flowCore)
 library(CytobankAPI)
@@ -53,7 +53,7 @@ library(CytoML)
 Next I'll import a cytobank experiment from cytobank using an API token (under "account settings") and the experiment ID ("from the experiment URL"). 
 
 The token below is no longer valid, but I've saved the output and we can load it two chunks below:
-  ```
+  ```{r}
 token <- "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI3YjYyMzIyYmMwZGZiZmFmYzI0ZWQ5NTg2ZDdlOGMzMyIsImV4cCI6MTU1MzE5OTk2MiwidXNlcl9pZCI6MTQ3LCJhdWQiOiJjeXRvYmFua19hcGlfdjFfdXNlcnMiLCJpYXQiOjE1NTMxNzExNjIsImlzcyI6Imh0dHBzOi8vdmFuZGVyYmlsdC5jeXRvYmFuay5vcmcvIiwibmJmIjoxNTUzMTcxMTYyLCJzdWIiOiJjeXRvYmFua19hcGlfdjEifQ.T1Wn-aHTUxppSPw_NODalWgZ2heZL9ALM2g5EhJbSew"
 cyto_session <- authenticate("vanderbilt", auth_token = token)
 experiment.id <- 29564
@@ -63,13 +63,13 @@ saveRDS(exp_info, "exp_info_sample.rds")
 ```
 
 In order to minimize the size of the API calls, `fetchCytobankExperimet` doesn't import the actual FCS files. In order to load those, we'll need to manually download them using `CytobankAPI` and read them in as FCS files. Again this requires access to a specific experiment, so we'll load a previously loaded version in the next chunk. 
-```
+```{r}
 fcspath <- fcs_files.download_zip(cyto_session, experiment.id, exp_info$fcs_files$originalId)
 fcspath_unzipped <- unzip(fcspath)
 myflowset <- read.flowSet(fcspath_unzipped)
 ```
 This chunk will load the same data as above, but will actually execute. 
-```
+```{r}
 exp_info <- readRDS(system.file("extdata", "exp_info_sample.rds", package = "cytotidyr"))
 myflowset <- read.flowSet(system.file("extdata",
 c("Donor 2 mem post-sort.fcs", "Donor 2 pre-sort.fcs" ),
@@ -77,7 +77,7 @@ package = "cytotidyr"))
 ```
 
 Here's an example of a typical workflow for going from an experiment + FCS files to a data.frame
-```
+```{r}
 mygatingset <- GatingSet(myflowset) # convert to a gatingset to use flowWorkspace
 #> ..done!
 mygatingset <- flowWorkspace::transform(mygatingset, exp_info$transforms) #transform the data
