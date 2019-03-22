@@ -15,11 +15,3 @@ A list of populations and how they are defined by gates
 \description{
 A simple wrapper for the population.list functions in cytobankAPI
 }
-<<<<<<< HEAD
-\seealso{
-\code{\link[flowCore]{Subset}}
-
-\code{\link[flowCore]{filter}}
-}
-=======
->>>>>>> 44fcb803f49ea4e40f952c6eb9c5aa71cc7c83e2

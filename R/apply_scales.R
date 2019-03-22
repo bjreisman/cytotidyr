@@ -2,20 +2,9 @@
 #'
 #' @param exp_info cytobank experiment from fetchCytobankExperiment
 #' @return A list of populations and how they are defined by gates
-<<<<<<< HEAD
-#' @seealso \code{\link[flowCore]{Subset}}
-#' @seealso \code{\link[flowCore]{filter}}
-=======
->>>>>>> 44fcb803f49ea4e40f952c6eb9c5aa71cc7c83e2
 #' @export
 #' @import CytobankAPI
 apply_scales <- function(input, exp_info, inverse = FALSE){
-<<<<<<< HEAD
-#
-#   input <- mydata.list[[1]]
-#   exp_info <- exp_info
-=======
->>>>>>> 44fcb803f49ea4e40f952c6eb9c5aa71cc7c83e2
 
   if(is_tibble(input)){
     input.tidy <- input
@@ -63,7 +52,6 @@ apply_scales <- function(input, exp_info, inverse = FALSE){
                    return(x)
                  }
                })
-<<<<<<< HEAD
   }
 
   output.tidy <- output.tidy %>%
@@ -80,23 +68,5 @@ apply_scales <- function(input, exp_info, inverse = FALSE){
     output <- output.tidy
   }
 
-=======
-  }
-
-  output.tidy <- output.tidy %>%
-    bind_cols(input.tidy %>%
-                select(-transform.order)) %>%
-    select(col.order)
-
-  if(is_tibble(input)){
-    output <- output.tidy
-  }else if(class(input) == "flowFrame"){
-    output <- input
-    exprs(output)<- output.tidy %>% as.matrix()
-  } else{
-    output <- output.tidy
-  }
-
->>>>>>> 44fcb803f49ea4e40f952c6eb9c5aa71cc7c83e2
   return(output)
 }

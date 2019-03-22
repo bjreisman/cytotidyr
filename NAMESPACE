@@ -17,22 +17,16 @@ export(inverseLogTransform)
 export(invertTransformerList)
 export(parseCytobankExperiment)
 export(parse_scales)
-<<<<<<< HEAD
-=======
 export(stat_density_point_2d)
 export(stat_densitypoint2d)
 export(tagFlowSet)
->>>>>>> 44fcb803f49ea4e40f952c6eb9c5aa71cc7c83e2
 import(CytoML)
 import(CytobankAPI)
 import(dplyr)
 import(flowCore)
 import(flowCore, except = filter)
 import(flowWorkspace)
-<<<<<<< HEAD
-=======
 import(ggplot2)
->>>>>>> 44fcb803f49ea4e40f952c6eb9c5aa71cc7c83e2
 import(scales)
 import(shiny)
 import(tibble)
