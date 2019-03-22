@@ -1,6 +1,4 @@
 # Cytotidyr
-<<<<<<< HEAD
-=======
 ![Logo](https://raw.githubusercontent.com/bjreisman/cytotidyr/master/vignettes/figures/cytotidyrlogo2.png)
 >>>>>>> 44fcb803f49ea4e40f952c6eb9c5aa71cc7c83e2
 
