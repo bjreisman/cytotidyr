@@ -122,3 +122,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 * Jonathan Irish
 * P. Brent Ferrell
 * Sierra Barone 
+* [RGLab's set of packages](https://github.com/RGLab) including flowCore, flowWorkspace, and CytoML, on which Cytotidyr is built.
