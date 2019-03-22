@@ -65,11 +65,15 @@ library(CytobankAPI)
 library(cytotidyr)
 token <- "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyM2FlMmNmNDQ2ODQyNGZkNDZmNzMyOTZjYzViYWY2YiIsImV4cCI6MTUzOTkxNzUzOSwidXNlcl9pZCI6ODg1NiwiYXVkIjoiY3l0b2JhbmtfYXBpX3YxX3VzZXJzIiwiaWF0IjoxNTM5ODg4NzM5LCJpc3MiOiJodHRwczovL2NvbW11bml0eS5jeXRvYmFuay5vcmcvIiwibmJmIjoxNTM5ODg4NzM5LCJzdWIiOiJjeXRvYmFua19hcGlfdjEifQ.7pS28qHB4mTM-feDEEIRRqgBKTKHvoKXelj3QHJjeSI"
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 cyto_session <- authenticate("vanderbilt", auth_token = token)
 =======
 cyto_session <- authenticate("vanderbilt", auth_token = 'token')
 >>>>>>> 765dff9... added newest exp_info object
+=======
+cyto_session <- authenticate("vanderbilt", auth_token = 'token')
+>>>>>>> 44fcb803f49ea4e40f952c6eb9c5aa71cc7c83e2
 experiment.id <- 29560
 
 exp_info <- get_experimentinfo(cyto_session = cyto_session, experiment.id)

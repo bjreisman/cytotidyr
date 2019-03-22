@@ -6,7 +6,7 @@
 #' @export
 #' @import flowCore
 
-as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = FALSE){
+as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = FALSE, add_pData = TRUE){
   x.list <- as.list(x@frames)
   myflowset.list <- lapply(x.list, function(ff) {
     filename <- ff@description$FILENAME
@@ -17,8 +17,11 @@ as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = F
     }
     if (add_filename == TRUE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
       ff.df[, "FCS Filename"] <- filename
 =======
+=======
+>>>>>>> 44fcb803f49ea4e40f952c6eb9c5aa71cc7c83e2
       ff.df[, "FCS Filename"] <- basename(filename)
     }
 
@@ -29,7 +32,10 @@ as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = F
       } else {
         warning("No pData found")
       }
+<<<<<<< HEAD
 >>>>>>> 4ba3ab6... removed cache
+=======
+>>>>>>> 44fcb803f49ea4e40f952c6eb9c5aa71cc7c83e2
     }
     return(ff.df)
   }

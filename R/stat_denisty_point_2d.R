@@ -41,9 +41,12 @@ stat_density_point_2d <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 stat_densitypoint2d <- stat_density_point_2d
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 30a62ca... denisty points dependenity on ggproto fixed
+=======
+>>>>>>> 44fcb803f49ea4e40f952c6eb9c5aa71cc7c83e2
 #' @import ggplot2
 #' @format NULL
 #' @usage NULL
