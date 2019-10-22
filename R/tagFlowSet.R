@@ -11,7 +11,7 @@ tagFlowSet <- function(myflowset, sampletags) {
   origpData <- flowWorkspace::pData(myflowset)
 
   newpData <-
-    sampletags[match(sampletags$FCS.Filename, origpData$name),] %>%
+    sampletags[match(origpData$name, sampletags$FCS.Filename),] %>%
     mutate(name = as.character(FCS.Filename)) %>%
     select(name, everything()) %>%
     as.data.frame() %>%
