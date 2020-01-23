@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gating:Gating-ML xmlns:gating="http://www.isac-net.org/std/Gating-ML/v2.0/gating" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:transforms="http://www.isac-net.org/std/Gating-ML/v2.0/transformations" xmlns:data-type="http://www.isac-net.org/std/Gating-ML/v2.0/datatypes" xsi:schemaLocation="http://www.isac-net.org/std/Gating-ML/v2.0/gating http://flowcyt.sourceforge.net/gating/2.0/xsd/Gating-ML.v2.0.xsd http://www.isac-net.org/std/Gating-ML/v2.0/transformations http://flowcyt.sourceforge.net/gating/2.0/xsd/Transformations.v2.0.xsd http://www.isac-net.org/std/Gating-ML/v2.0/datatypes http://flowcyt.sourceforge.net/gating/2.0/xsd/DataTypes.v2.0.xsd">
+  <data-type:custom_info>
+    <cytobank>
+      <about>Gating-ML 2.0 export of Cytobank experiment number 33997.</about>
+      <cytobank_gating_version>2.0</cytobank_gating_version>
+      <experiment_number>33997</experiment_number>
+      <experiment_title>BJR - 20200120 - PX458 @24hrs MV411, KG-1</experiment_title>
+      <experiment_url>https://vanderbilt.cytobank.org/cytobank/experiments/33997</experiment_url>
+      <export_timestamp>2020-01-23T09:45:17.418-08:00</export_timestamp>
+    </cytobank>
+  </data-type:custom_info>
+  <gating:PolygonGate gating:id="Gate_2110943_aW50YWN0">
+    <data-type:custom_info>
+      <cytobank>
+        <name>intact</name>
+        <id>2110943</id>
+        <gate_id>1</gate_id>
+        <type>PolygonGate</type>
+        <version>3</version>
+        <compensation_id>-2</compensation_id>
+        <fcs_file_id />
+        <tailored>false</tailored>
+        <tailored_per_population>false</tailored_per_population>
+        <tailored_per_population_gateset_id />
+        <fcs_file_filename />
+        <definition>{"scale":{"x":{"flag":1,"argument":"1","min":1.0,"max":262144.0,"bins":256,"size":256},"y":{"flag":1,"argument":"1","min":1.0,"max":262144.0,"bins":256,"size":256}},"positive":false,"negative":false,"label":[132995.55057917416,210951.606136943],"polygon":{"vertices":[[13563.604633228199,45334.12939275697],[76315.98301160657,43302.0131136872],[167408.14517376875,140843.59450903605],[162347.46949809307,185550.15264857092],[132995.55057917416,200791.02474159418],[96558.68571430928,179453.8038113616],[62146.091119714685,143891.7689276407],[40891.25328187685,106297.61776485]]}}</definition>
+      </cytobank>
+    </data-type:custom_info>
+    <gating:dimension gating:compensation-ref="FCS">
+      <data-type:fcs-dimension data-type:name="SSC-A" />
+    </gating:dimension>
+    <gating:dimension gating:compensation-ref="FCS">
+      <data-type:fcs-dimension data-type:name="FSC-A" />
+    </gating:dimension>
+    <gating:vertex>
+      <gating:coordinate data-type:value="13563.604633228199" />
+      <gating:coordinate data-type:value="45334.12939275697" />
+    </gating:vertex>
+    <gating:vertex>
+      <gating:coordinate data-type:value="76315.98301160657" />
+      <gating:coordinate data-type:value="43302.0131136872" />
+    </gating:vertex>
+    <gating:vertex>
+      <gating:coordinate data-type:value="167408.14517376875" />
+      <gating:coordinate data-type:value="140843.59450903605" />
+    </gating:vertex>
+    <gating:vertex>
+      <gating:coordinate data-type:value="162347.46949809307" />
+      <gating:coordinate data-type:value="185550.15264857092" />
+    </gating:vertex>
+    <gating:vertex>
+      <gating:coordinate data-type:value="132995.55057917416" />
+      <gating:coordinate data-type:value="200791.02474159418" />
+    </gating:vertex>
+    <gating:vertex>
+      <gating:coordinate data-type:value="96558.68571430928" />
+      <gating:coordinate data-type:value="179453.8038113616" />
+    </gating:vertex>
+    <gating:vertex>
+      <gating:coordinate data-type:value="62146.091119714685" />
+      <gating:coordinate data-type:value="143891.7689276407" />
+    </gating:vertex>
+    <gating:vertex>
+      <gating:coordinate data-type:value="40891.25328187685" />
+      <gating:coordinate data-type:value="106297.61776485" />
+    </gating:vertex>
+  </gating:PolygonGate>
+  <gating:RectangleGate gating:id="Gate_2110944_c2luZ2xlcw..">
+    <data-type:custom_info>
+      <cytobank>
+        <name>singles</name>
+        <id>2110944</id>
+        <gate_id>2</gate_id>
+        <type>RectangleGate</type>
+        <version>3</version>
+        <compensation_id>-2</compensation_id>
+        <fcs_file_id />
+        <tailored>false</tailored>
+        <tailored_per_population>false</tailored_per_population>
+        <tailored_per_population_gateset_id />
+        <fcs_file_filename />
+        <definition>{"scale":{"x":{"flag":1,"argument":"1","min":1.0,"max":262144.0,"bins":256,"size":256},"y":{"flag":1,"argument":"1","min":1.0,"max":262144.0,"bins":256,"size":256}},"positive":false,"negative":false,"label":[30769.901930525495,106297.61776485],"rectangle":{"x1":26721.361389984955,"y1":59558.943346245345,"x2":178541.63166025523,"y2":94104.92009043139}}</definition>
+      </cytobank>
+    </data-type:custom_info>
+    <gating:dimension gating:compensation-ref="FCS" gating:min="26721.361389984955" gating:max="178541.63166025523">
+      <data-type:fcs-dimension data-type:name="FSC-W" />
+    </gating:dimension>
+    <gating:dimension gating:compensation-ref="FCS" gating:min="59558.943346245345" gating:max="94104.92009043139">
+      <data-type:fcs-dimension data-type:name="FSC-H" />
+    </gating:dimension>
+  </gating:RectangleGate>
+  <transforms:transformation transforms:id="Tr_Arcsinh_150">
+    <transforms:fasinh transforms:T="176.2801790465702" transforms:M="0.43429448190325176" transforms:A="0.0" />
+  </transforms:transformation>
+  <gating:RectangleGate gating:id="Gate_2110945_R0ZQKw..">
+    <data-type:custom_info>
+      <cytobank>
+        <name>GFP+</name>
+        <id>2110945</id>
+        <gate_id>3</gate_id>
+        <type>RectangleGate</type>
+        <version>3</version>
+        <compensation_id>-2</compensation_id>
+        <fcs_file_id />
+        <tailored>false</tailored>
+        <tailored_per_population>false</tailored_per_population>
+        <tailored_per_population_gateset_id />
+        <fcs_file_filename />
+        <definition>{"scale":{"x":{"flag":4,"argument":"150","min":-200.0,"max":262144.0,"bins":256,"size":256},"y":{"flag":1,"argument":"1","min":1.0,"max":262144.0,"bins":256,"size":256}},"positive":false,"negative":false,"label":[1.1675760659379777,220096.12939275673],"rectangle":{"x1":1.560763357743841,"y1":32125.373578803483,"x2":7.387084136321633,"y2":207903.43171833816}}</definition>
+      </cytobank>
+    </data-type:custom_info>
+    <gating:dimension gating:compensation-ref="FCS" gating:min="1.560763357743841" gating:max="7.387084136321633" gating:transformation-ref="Tr_Arcsinh_150">
+      <data-type:fcs-dimension data-type:name="GFP-A" />
+    </gating:dimension>
+    <gating:dimension gating:compensation-ref="FCS" gating:min="32125.373578803483" gating:max="207903.43171833816">
+      <data-type:fcs-dimension data-type:name="FSC-A" />
+    </gating:dimension>
+  </gating:RectangleGate>
+  <gating:BooleanGate gating:id="GateSet_1158477">
+    <data-type:custom_info>
+      <cytobank>
+        <name>intact</name>
+        <id>1158477</id>
+        <gate_set_id>1</gate_set_id>
+        <version>3</version>
+        <tailored>false</tailored>
+        <tailored_per_population>false</tailored_per_population>
+        <definition>{"gates":[1],"negGates":[],"tailoredPerPopulation":{}}</definition>
+      </cytobank>
+    </data-type:custom_info>
+    <gating:and>
+      <gating:gateReference gating:ref="Gate_2110943_aW50YWN0" />
+      <!-- Boolean "and" gates are used to describe Cytobank's populations (gate sets). Here, we only have one gate defining the population, but Gating-ML requires at least two arguments for the "and" gate. Therefore, we are referencing the same gate twice. -->
+      <gating:gateReference gating:ref="Gate_2110943_aW50YWN0" />
+    </gating:and>
+  </gating:BooleanGate>
+  <gating:BooleanGate gating:id="GateSet_1158478">
+    <data-type:custom_info>
+      <cytobank>
+        <name>singles</name>
+        <id>1158478</id>
+        <gate_set_id>2</gate_set_id>
+        <version>3</version>
+        <tailored>false</tailored>
+        <tailored_per_population>false</tailored_per_population>
+        <definition>{"gates":[1,2],"negGates":[],"tailoredPerPopulation":{}}</definition>
+      </cytobank>
+    </data-type:custom_info>
+    <gating:and>
+      <gating:gateReference gating:ref="Gate_2110943_aW50YWN0" />
+      <gating:gateReference gating:ref="Gate_2110944_c2luZ2xlcw.." />
+    </gating:and>
+  </gating:BooleanGate>
+  <gating:BooleanGate gating:id="GateSet_1158479">
+    <data-type:custom_info>
+      <cytobank>
+        <name>GFP+</name>
+        <id>1158479</id>
+        <gate_set_id>3</gate_set_id>
+        <version>3</version>
+        <tailored>false</tailored>
+        <tailored_per_population>false</tailored_per_population>
+        <definition>{"gates":[1,2,3],"negGates":[],"tailoredPerPopulation":{}}</definition>
+      </cytobank>
+    </data-type:custom_info>
+    <gating:and>
+      <gating:gateReference gating:ref="Gate_2110943_aW50YWN0" />
+      <gating:gateReference gating:ref="Gate_2110944_c2luZ2xlcw.." />
+      <gating:gateReference gating:ref="Gate_2110945_R0ZQKw.." />
+    </gating:and>
+  </gating:BooleanGate>
+</gating:Gating-ML>
+
