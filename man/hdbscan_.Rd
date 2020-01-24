@@ -4,8 +4,14 @@
 \alias{hdbscan_}
 \title{Conveinience function to perform HDBSCAN via reticulate.}
 \usage{
-hdbscan_(embedding, min_samples = 7L, min_cluster_size = 9L,
-  outlier = 0, algorithm = "best", seed = NULL)
+hdbscan_(
+  embedding,
+  min_samples = 7L,
+  min_cluster_size = 9L,
+  outlier = 0,
+  algorithm = "best",
+  seed = NULL
+)
 }
 \arguments{
 \item{embedding}{A matrix giving the embedding to be used for clustering.}
