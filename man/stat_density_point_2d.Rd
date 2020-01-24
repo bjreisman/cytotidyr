@@ -4,9 +4,19 @@
 \alias{stat_density_point_2d}
 \title{Plots points while computing a kernel density estimate}
 \usage{
-stat_density_point_2d(mapping = NULL, data = NULL, geom = "point",
-  position = "identity", ..., contour = FALSE, n = 100, h = NULL,
-  na.rm = FALSE, show.legend = NA, inherit.aes = TRUE)
+stat_density_point_2d(
+  mapping = NULL,
+  data = NULL,
+  geom = "point",
+  position = "identity",
+  ...,
+  contour = FALSE,
+  n = 100,
+  h = NULL,
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE
+)
 }
 \arguments{
 \item{n}{number of grid points in each direction}

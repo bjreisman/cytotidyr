@@ -4,9 +4,12 @@
 \alias{inverseArcsinhTransform}
 \title{Creates the inverse of the asinh transformation, for backtransformations}
 \usage{
-
-  inverseArcsinhTransform(transformationId = "defaultInverseArcsinhTransform",
-  a = 1, b = 1, c = 0)
+inverseArcsinhTransform(
+  transformationId = "defaultInverseArcsinhTransform",
+  a = 1,
+  b = 1,
+  c = 0
+)
 }
 \arguments{
 \item{transformationId}{character string to identify the transformation}
@@ -27,7 +30,8 @@ Creates the inverse of the asinh transformation, for backtransformations
 \code{\link{transform-class}}, \code{\link{transform}},
 \code{asinh}
 
-Other Transform functions: \code{\link{inverseLogTransform}}
+Other Transform functions: 
+\code{\link{inverseLogTransform}()}
 }
 \concept{Transform functions}
 \keyword{methods}

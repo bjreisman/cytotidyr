@@ -4,8 +4,13 @@
 \alias{gate_population}
 \title{A simple wrapper for the gating functions in flowCore}
 \usage{
-gate_population(input, population, exp_info, verbose = TRUE,
-  apply_scales = TRUE)
+gate_population(
+  input,
+  population,
+  exp_info,
+  verbose = TRUE,
+  apply_scales = TRUE
+)
 }
 \arguments{
 \item{population}{A character string corresponding to the desired population}
