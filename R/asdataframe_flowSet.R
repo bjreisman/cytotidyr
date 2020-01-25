@@ -6,7 +6,8 @@
 #' @param verbose if TRUE, will display warnings, otherwise will hide warnings
 #' @return A tibble of all the cells in the flowSet
 #' @export
-#' @import flowCore ncdfFlow
+#' @rawNamespace  import(ncdfFlow, except = filter)
+#' @rawNamespace import(flowCore, except = c(filter, view))
 
 as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = FALSE, add_pData = TRUE, verbose = TRUE){
 
@@ -50,7 +51,9 @@ as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = F
 #' @param verbose if TRUE, will display warnings, otherwise will hide warnings
 #' @return A tibble of all the cells in the flowSet
 #' @export
-#' @import flowCore ncdfFlow
+#' @rawNamespace  import(ncdfFlow, except = filter)
+#' @rawNamespace import(flowCore, except = c(filter, view))
+
 
 
 as_tibble.flowSet <- function(x, ...) {
