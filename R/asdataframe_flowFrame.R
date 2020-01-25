@@ -3,7 +3,7 @@
 #' @param use_longnames if TRUE, uses the longName from the FCS file as the column names
 #' @return A data.frame of all the cells in the flowFrame
 #' @export
-#' @import flowCore
+#' @import import(flowCore, except = filter)
 
 
 as.data.frame.flowFrame <- function(x, ..., use_longnames = FALSE){
