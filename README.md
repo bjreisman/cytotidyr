@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 # Cytotidyr
 ![Logo](https://raw.githubusercontent.com/bjreisman/cytotidyr/master/vignettes/figures/cytotidyrlogo2.png)
 
@@ -22,7 +27,7 @@ Cytotidyr was developed for R 3.6+. In order to fully utilize the features of cy
 ```{r}
 if (!requireNamespace("BiocManager", quietly = TRUE))
 install.packages("BiocManager")
-BiocManager::install("flowCore", version = "3.8")
+BiocManager::install("flowCore")
 
 install("CytobankAPI")
 ```
@@ -40,7 +45,7 @@ devtools::install_github("bjreisman/cytotidyr")
 ### Getting Started
 
 First we'll load the dependencies neccessary to run this example:
-  ```{r}
+```{r}
 library(cytotidyr)
 library(flowCore)
 library(CytobankAPI)
@@ -53,8 +58,10 @@ library(CytoML)
 Next I'll import a cytobank experiment from cytobank using an API token (under "account settings") and the experiment ID ("from the experiment URL"). 
 
 The token below is no longer valid, but I've saved the output and we can load it two chunks below:
-  ```{r}
-token <- "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI3YjYyMzIyYmMwZGZiZmFmYzI0ZWQ5NTg2ZDdlOGMzMyIsImV4cCI6MTU1MzE5OTk2MiwidXNlcl9pZCI6MTQ3LCJhdWQiOiJjeXRvYmFua19hcGlfdjFfdXNlcnMiLCJpYXQiOjE1NTMxNzExNjIsImlzcyI6Imh0dHBzOi8vdmFuZGVyYmlsdC5jeXRvYmFuay5vcmcvIiwibmJmIjoxNTUzMTcxMTYyLCJzdWIiOiJjeXRvYmFua19hcGlfdjEifQ.T1Wn-aHTUxppSPw_NODalWgZ2heZL9ALM2g5EhJbSew"
+```{r}
+token <- "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI4ZjA2OTA5Y2FkZTUyZDM0OTIxNDE4ZjMxZTljMjc0MiIsImV4cCI6MTU4MDQ0MjYzNSwidXNlcl9pZCI6MTQ3LCJhdWQiOiJjeXRvYmFua19hcGlfdjFfdXNlcnMiLCJpYXQiOjE1ODA0MTM4MzUsImlzcyI6Imh0dHBzOi8vdmFuZGVyYmlsdC5jeXRvYmFuay5vcmcvIiwibmJmIjoxNTgwNDEzODM1LCJzdWIiOiJjeXRvYmFua19hcGlfdjEifQ.QIsddGuaaE6PUef1DveyyKChwQ0lAuQCt_xUTxVPR-E"
+
+BiocManager::install("CytoML")
 cyto_session <- authenticate("vanderbilt", auth_token = token)
 experiment.id <- 29564
 
@@ -71,18 +78,37 @@ myflowset <- read.flowSet(fcspath_unzipped)
 This chunk will load the same data as above, but will actually execute. 
 ```{r}
 exp_info <- readRDS(system.file("extdata", "exp_info_sample.rds", package = "cytotidyr"))
-myflowset <- read.flowSet(system.file("extdata",
-c("Donor 2 mem post-sort.fcs", "Donor 2 pre-sort.fcs" ),
-package = "cytotidyr"))
-```
+exp_info$gates.path <- system.file("extdata", basename(exp_info$gates.path), package = "cytotidyr")
 
-Here's an example of a typical workflow for going from an experiment + FCS files to a data.frame
-```{r}
-mygatingset <- GatingSet(myflowset) # convert to a gatingset to use flowWorkspace
+mygatingset <- cytobank_to_gatingset(exp_info$gates.path,
+  system.file(
+  "extdata",
+  c("Donor 2 mem post-sort.fcs", "Donor 2 pre-sort.fcs"),
+  package = "cytotidyr"
+))
+
+#> intact
+#> singles
+#> purity UR
+#> purity UL
+#>  LL
+#> purity LR
+#>  FCS files have the same following channels:
+#> FSC-A
+#> FSC-W
+#> FSC-H
+#> SSC-A
+#> SSC-W
+#> SSC-H
+#> FL-A
+#> PE-A
+#> APC-A
+#> Alexa Fluor 700-A
+#> Time
+#>  Donor 2 mem post-sort.fcs to empty cdf slot...
+#> write Donor 2 pre-sort.fcs to empty cdf slot...
+#> done!
 #> ..done!
-mygatingset <- flowWorkspace::transform(mygatingset, exp_info$transforms) #transform the data
-markernames(mygatingset) <- exp_info$panels$`Panel 1` #apply the panels
-CytoML::gating(exp_info$gates, mygatingset) #run gating 
 #> intact
 #> purity LR
 #> purity LL
@@ -90,28 +116,34 @@ CytoML::gating(exp_info$gates, mygatingset) #run gating
 #> purity UR
 #> singles
 #> ..done!
-myflowset_preprocessed <- flowWorkspace::getData(mygatingset, "singles") #back to a flowSet
-myflowset_tagged <- tagFlowSet(myflowset_preprocessed, exp_info$sampletags) #apply sampletags
+```
 
-mytidydata <- as.data.frame(myflowset_tagged)
+Here's an example of a typical workflow for going from an experiment + FCS files to a data.frame
+```{r}
+mygatingset_compesated <- compensate(mygatingset, exp_info$compensations$`Identity Comp`)
+mygatingset_scaled <- transform(mygatingset_compesated, exp_info$transforms)
+mygatingset_tagged <- apply_sampletags(mygatingset_scaled, exp_info)
+myflowset_singles <- gs_pop_get_data(mygatingset_tagged, "singles")
 
+mytidydata <- as.data.frame(myflowset_singles, use_longnames = F)
 str(mytidydata)
-#> 'data.frame':    28735 obs. of  15 variables:
-#>  $ FSC-A            : num  156339 134925 105803 148191 151899 ...
-#>  $ FSC-W            : num  84410 80593 76462 83050 82579 ...
-#>  $ FSC-H            : num  121381 109717 90684 116939 120550 ...
-#>  $ SSC-A            : num  3.81 3.6 3.42 3.42 3.45 ...
-#>  $ SSC-W            : num  88618 89930 81403 86246 83903 ...
-#>  $ SSC-H            : num  3.5 3.28 3.2 3.15 3.21 ...
-#>  $ FL-A             : num  1.374 2.379 1.961 0.629 3.073 ...
-#>  $ PE-A             : num  5.25 2.23 4.8 5.28 2.19 ...
-#>  $ APC-A            : num  1.1506 3.1148 0.0578 0.1319 3.9569 ...
-#>  $ Alexa Fluor 700-A: num  0.221 0.728 1.987 2.32 1.391 ...
-#>  $ Time             : num  0 0 0 0 0.1 ...
-#>  $ FCS Filename     : chr  "Donor 2 pre-sort.fcs" "Donor 2 pre-sort.fcs" "Donor 2 pre-sort.fcs" "Donor 2 pre-sort.fcs" ...
-#>  $ Sample.Type      : Factor w/ 2 levels "Post-Sort","Pre-Sort": 2 2 2 2 2 2 2 2 2 2 ...
-#>  $ Plate            : Factor w/ 1 level "Samples": 1 1 1 1 1 1 1 1 1 1 ...
-#>  $ FCS.File.Category: Factor w/ 1 level "Experiment Files": 1 1 1 1 1 1 1 1 1 1 ...
+#> 'data.frame':	28735 obs. of  16 variables:
+#> $ FSC-A            : num  156339 134925 105803 148191 151899 ...
+#> $ FSC-W            : num  84410 80593 76462 83050 82579 ...
+#> $ FSC-H            : num  121381 109717 90684 116939 120550 ...
+#> $ SSC-A            : num  0.0254 0.024 0.0228 0.0228 0.023 ...
+#> $ SSC-W            : num  88618 89930 81403 86246 83903 ...
+#> $ SSC-H            : num  3.5 3.28 3.2 3.15 3.21 ...
+#> $ FL-A             : num  0.007266 0.015847 0.012436 0.000837 0.020483 ...
+#> $ PE-A             : num  5.246 1.537 4.78 5.274 -0.397 ...
+#> $ APC-A            : num  1.125 3.114 -0.121 -0.116 3.957 ...
+#> $ Alexa Fluor 700-A: num  0.000178 -0.000228 0.003316 0.003869 -0.00046 ...
+#> $ Time             : num  0 0 0 0 0.1 ...
+#> $ FCS Filename     : chr  "Donor 2 pre-sort.fcs" "Donor 2 pre-sort.fcs" "Donor 2 pre-sort.fcs" "Donor 2 pre-sort.fcs" ...
+#> $ Sample.Type      : Factor w/ 2 levels "Post-Sort","Pre-Sort": 2 2 2 2 2 2 2 2 2 2 ...
+#> $ Plate            : Factor w/ 1 level "Samples": 1 1 1 1 1 1 1 1 1 1 ...
+#> $ FCS.File.Category: Factor w/ 1 level "Experiment Files": 1 1 1 1 1 1 1 1 1 1 ...
+#> $ name             : chr  "Donor 2 pre-sort.fcs" "Donor 2 pre-sort.fcs" "Donor 2 pre-sort.fcs" "Donor 2 pre-sort.fcs" ...
 ```
 ## License
 
