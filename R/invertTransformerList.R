@@ -2,6 +2,7 @@
 #' @param transforms a transformList object
 #' @return a transformList object
 #' @export
+#' @rawNamespace import(flowCore, except = c(filter, view))
 
 invertTransformerList <- function(transforms) {
   transformsInverted<- lapply(transforms, function(transforms.i) {

@@ -3,7 +3,7 @@
 #' @param cofactor a cofactor to be used for the transformation
 #' @return A transformation of the axis by the cofactor, such that
 #' y = asinh(x/cofactor)
-#' @seealso \code{\link[scales]{pseudo_log_trans}} in the scales
+#' @seealso \code{\link[scales]{log_trans}} in the scales
 #' package which implements a similar transformation
 #' @export
 #' @importFrom scales trans_new

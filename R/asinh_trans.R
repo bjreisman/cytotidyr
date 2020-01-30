@@ -3,9 +3,8 @@
 #' @param cofactor a cofactor to be used for the transformation
 #' @return A transformation of the axis by the cofactor, such that
 #' y = asinh(x/cofactor)
-#' @seealso \code{\link[scales]{pseudo_log_trans}} in the scales
+#' @seealso \code{\link[scales]{log_trans}} in the scales
 #' package which implements a similar transformation
-#' @export
 #' @importFrom scales trans_new
 #' @examples
 #' library(ggplot2)
@@ -13,7 +12,6 @@
 #' ggplot(diamonds, aes(x = price)) +
 #' geom_histogram() +
 #' scale_x_continuous(trans = asinh_trans(5))
-
 asinh_trans = function(cofactor) {
 
   ### Making pretty tick marks

@@ -71,7 +71,8 @@ fetchCytobankExperiment <- function(cyto_session, exp_id){
                                    panel = names(panels_raw)[i])
   }
 
-  panel_lut <- suppressWarnings(bind_rows(panelsByFCS))
+  panel_lut <- suppressWarnings(bind_rows(panelsByFCS)) %>%
+    mutate(fcs_files = as.character(fcs_files))
 
   panels <- lapply(panels, function(mydf) {
     channels <- unlist(mydf$longName)
@@ -89,8 +90,8 @@ fetchCytobankExperiment <- function(cyto_session, exp_id){
   ## Parse Gates ---------------------------------------------------------------
   message(paste0("Importing Gates using CytoML"))
   gatingML_path <- CytobankAPI::gates.gatingML_download(cyto_session, exp_id)
-  gates <- CytoML::read.gatingML.cytobank(gatingML_path)
-  file.remove(gatingML_path)
+  #gates <- CytoML::read.gatingML.cytobank(gatingML_path)
+  #file.remove(gatingML_path)
   ## Parse Compensations -------------------------------------------------------
   comps <- CytobankAPI::compensations.list(cyto_session,
                                            exp_id,
@@ -109,7 +110,7 @@ fetchCytobankExperiment <- function(cyto_session, exp_id){
               "scales" = scales,
               "transforms" = transforms,
               "compensations" = comps,
-              "gates" = gates,
+              "gates.path" = gatingML_path,
               "panels" = panels,
               "experiment.id" =   experiment.header$id,
               "experiment.name" =   experiment.header$experimentName

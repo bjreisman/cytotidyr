@@ -2,21 +2,31 @@
 % Please edit documentation in R/asdataframe_flowSet.R
 \name{as.data.frame.flowSet}
 \alias{as.data.frame.flowSet}
-\title{S3 Method for the as.data.frame function to convert a flowset into a dataframe}
+\title{S3 Method for the as.data.frame function to convert a flowset into a data.frame}
 \usage{
-\method{as.data.frame}{flowSet}(x, ..., add_filename = TRUE,
-  use_longnames = FALSE, add_pData = TRUE)
+\method{as.data.frame}{flowSet}(
+  x,
+  ...,
+  add_filename = TRUE,
+  use_longnames = FALSE,
+  add_pData = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
-\item{x}{a flowSet object}
+\item{x}{a flowSet or ncdfFlowSet object}
 
 \item{add_filename}{if TRUE adds the filename of the original FCS file as a column}
 
 \item{use_longnames}{if TRUE, uses the longName from the FCS file as the column names}
+
+\item{verbose}{if TRUE, will display warnings, otherwise will hide warnings}
+
+\item{add_pdata}{if TRUE, adds pData as additional columns to the output}
 }
 \value{
-A data.frame of all the cells in the flowSet
+A tibble of all the cells in the flowSet
 }
 \description{
-S3 Method for the as.data.frame function to convert a flowset into a dataframe
+S3 Method for the as.data.frame function to convert a flowset into a data.frame
 }

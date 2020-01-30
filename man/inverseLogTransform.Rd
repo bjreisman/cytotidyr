@@ -27,7 +27,8 @@ user) to be applied on a data set
 \seealso{
 \code{\link{transform-class}}, \code{\link{transform}}
 
-Other Transform functions: \code{\link{inverseArcsinhTransform}}
+Other Transform functions: 
+\code{\link{inverseArcsinhTransform}()}
 }
 \concept{Transform functions}
 \keyword{methods}

@@ -24,6 +24,6 @@ geom_histogram() +
 scale_x_continuous(trans = asinh_trans(5))
 }
 \seealso{
-\code{\link[scales]{pseudo_log_trans}} in the scales
+\code{\link[scales]{log_trans}} in the scales
 package which implements a similar transformation
 }
