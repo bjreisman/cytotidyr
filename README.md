@@ -56,8 +56,7 @@ The token below is no longer valid, but I've saved the output and we can load it
 ```{r}
 token <- "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI4ZjA2OTA5Y2FkZTUyZDM0OTIxNDE4ZjMxZTljMjc0MiIsImV4cCI6MTU4MDQ0MjYzNSwidXNlcl9pZCI6MTQ3LCJhdWQiOiJjeXRvYmFua19hcGlfdjFfdXNlcnMiLCJpYXQiOjE1ODA0MTM4MzUsImlzcyI6Imh0dHBzOi8vdmFuZGVyYmlsdC5jeXRvYmFuay5vcmcvIiwibmJmIjoxNTgwNDEzODM1LCJzdWIiOiJjeXRvYmFua19hcGlfdjEifQ.QIsddGuaaE6PUef1DveyyKChwQ0lAuQCt_xUTxVPR-E"
 
-BiocManager::install("CytoML")
-cyto_session <- authenticate("vanderbilt", auth_token = token)
+cyto_session <- CytobankAPI::authenticate("vanderbilt", auth_token = token)
 experiment.id <- 29564
 
 exp_info <- fetchCytobankExperiment(cyto_session = cyto_session, experiment.id)
@@ -75,7 +74,7 @@ This chunk will load the same data as above, but will actually execute.
 exp_info <- readRDS(system.file("extdata", "exp_info_sample.rds", package = "cytotidyr"))
 exp_info$gates.path <- system.file("extdata", basename(exp_info$gates.path), package = "cytotidyr")
 
-mygatingset <- cytobank_to_gatingset(exp_info$gates.path,
+mygatingset <- CytoML::cytobank_to_gatingset(exp_info$gates.path,
   system.file(
   "extdata",
   c("Donor 2 mem post-sort.fcs", "Donor 2 pre-sort.fcs"),
