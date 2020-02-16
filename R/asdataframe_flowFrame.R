@@ -7,7 +7,6 @@
 
 
 as.data.frame.flowFrame <- function(x, ..., use_longnames = FALSE){
-  e
   df.tmp <- as.data.frame(exprs(x))
   if(use_longnames == TRUE){
     colnames(df.tmp) <- x@parameters@data$desc
