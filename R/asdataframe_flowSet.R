@@ -9,7 +9,8 @@
 #' @rawNamespace  import(ncdfFlow, except = filter)
 #' @rawNamespace import(flowCore, except = c(filter, view))
 
-as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = FALSE, add_pData = TRUE, verbose = TRUE){
+as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = TRUE,
+                                  add_pData = TRUE, verbose = FALSE){
 
   if(class(x) == "ncdfFlowSet") {
     x <- ncdfFlow::as.flowSet(x)
@@ -19,8 +20,15 @@ as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = F
     filename <- ff@description$FILENAME
     ff.df <- as.data.frame(exprs(ff))
     if(use_longnames == TRUE){
-      colnames(ff.df) <- ff@parameters@data$desc
-   #   print(colnames(ff.df))
+      longnames.tmp <- ff@parameters@data$desc
+      longnames.notna <- !is.na(longnames.tmp)
+      if(any(!longnames.notna & verbose == TRUE)){
+        warning(
+          paste("No longName found for:\n",
+                (paste(colnames(ff.df)[!longnames.notna], collapse= "\n ")))
+        )
+      }
+      colnames(ff.df)[longnames.notna] <- longnames.tmp[longnames.notna]
     }
     if (add_filename == TRUE) {
       ff.df[, "FCS Filename"] <- basename(filename)
@@ -57,6 +65,8 @@ as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = F
 
 
 as_tibble.flowSet <- function(x, ...) {
+
   x<- as.data.frame.flowSet(x, ...) %>%
     as_tibble()
+  x
 }

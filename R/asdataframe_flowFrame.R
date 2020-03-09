@@ -6,10 +6,12 @@
 #' @rawNamespace import(flowCore, except = c(filter, view))
 
 
-as.data.frame.flowFrame <- function(x, ..., use_longnames = FALSE){
-  df.tmp <- as.data.frame(exprs(x))
+as.data.frame.flowFrame <- function(x, ..., use_longnames = TRUE){
+  ff.df <- as.data.frame(exprs(x))
   if(use_longnames == TRUE){
-    colnames(df.tmp) <- x@parameters@data$desc
+    longnames.tmp <- x@parameters@data$desc
+    longnames.notna <- !is.na(longnames.tmp)
+    colnames(ff.df)[longnames.notna] <- longnames.tmp[longnames.notna]
   }
-  df.tmp
+  ff.df
 }
