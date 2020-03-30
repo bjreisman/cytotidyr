@@ -23,7 +23,14 @@ fetchCytobankExperiment <- function(cyto_session, exp_id){
   ## Extract the FCS file information ------------------------------------------
   fcs.file.list <- CytobankAPI::fcs_files.list(cyto_session, exp_id)
   cyto_session <- authenticate("vanderbilt", auth_token = token)
-  fcs.file.tibble <- as_tibble(apply(as.matrix(fcs.file.list), 2, unlist)) %>%
+
+  fcs.file.matrix <- apply(as.matrix(fcs.file.list), 2, unlist)
+  if(nrow(fcs.file.list) == 1) {
+    fcs.file.matrix <- t(fcs.file.matrix) #if experiment contains one FCS file
+  }
+
+
+  fcs.file.tibble <- as_tibble(fcs.file.matrix) %>%
     rename(originalId = "id") %>%
     select(c("filename","md5sum", "originalId", "sampleName"))
 
