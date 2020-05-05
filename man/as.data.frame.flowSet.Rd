@@ -8,9 +8,9 @@
   x,
   ...,
   add_filename = TRUE,
-  use_longnames = FALSE,
+  use_longnames = TRUE,
   add_pData = TRUE,
-  verbose = TRUE
+  verbose = FALSE
 )
 }
 \arguments{

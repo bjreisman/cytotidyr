@@ -4,7 +4,7 @@
 \alias{as.data.frame.flowFrame}
 \title{S3 Method for the as.data.frame function to convert a flowFrame into a dataframe}
 \usage{
-\method{as.data.frame}{flowFrame}(x, ..., use_longnames = FALSE)
+\method{as.data.frame}{flowFrame}(x, ..., use_longnames = TRUE)
 }
 \arguments{
 \item{x}{a flowFrame object}
