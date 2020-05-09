@@ -12,20 +12,21 @@
 as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = TRUE,
                                   add_pData = TRUE, verbose = FALSE){
 
-  if(class(x) == "ncdfFlowSet") {
+  if (class(x) == "ncdfFlowSet") {
     x <- ncdfFlow::as.flowSet(x)
   }
   x.list <- as.list(x@frames)
+
   myflowset.list <- lapply(x.list, function(ff) {
     filename <- ff@description$FILENAME
     ff.df <- as.data.frame(exprs(ff))
-    if(use_longnames == TRUE){
+    if (use_longnames == TRUE) {
       longnames.tmp <- ff@parameters@data$desc
       longnames.notna <- !is.na(longnames.tmp)
-      if(any(!longnames.notna & verbose == TRUE)){
+      if (any(!longnames.notna & verbose == TRUE)) {
         warning(
           paste("No longName found for:\n",
-                (paste(colnames(ff.df)[!longnames.notna], collapse= "\n ")))
+                (paste(colnames(ff.df)[!longnames.notna], collapse = "\n ")))
         )
       }
       colnames(ff.df)[longnames.notna] <- longnames.tmp[longnames.notna]
@@ -35,15 +36,16 @@ as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = T
     }
 
     if (add_pData == TRUE) {
-      if(ncol(pData(x)) > 1){
-        tags.x <- pData(x)[basename(filename),]
+      if (ncol(pData(x)) > 1) {
+        tags.x <- pData(x)[identifier(ff),]
         ff.df <- suppressWarnings(cbind(ff.df, tags.x[-1]))
       } else {
-        if(verbose == TRUE) {
+        if (verbose == TRUE) {
           warning("No pData found")
         }
       }
     }
+
     return(ff.df)
   }
   )
@@ -66,7 +68,7 @@ as.data.frame.flowSet <- function(x, ..., add_filename = TRUE, use_longnames = T
 
 as_tibble.flowSet <- function(x, ...) {
 
-  x<- as.data.frame.flowSet(x, ...) %>%
+  x <- as.data.frame.flowSet(x, ...) %>%
     as_tibble()
   x
 }
