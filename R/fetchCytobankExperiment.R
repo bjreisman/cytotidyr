@@ -22,7 +22,7 @@ fetchCytobankExperiment <- function(cyto_session, exp_id){
 
   ## Extract the FCS file information ------------------------------------------
   fcs.file.list <- CytobankAPI::fcs_files.list(cyto_session, exp_id)
-  cyto_session <- authenticate("vanderbilt", auth_token = token)
+#  cyto_session <- authenticate("vanderbilt", auth_token = token)
 
   fcs.file.matrix <- apply(as.matrix(fcs.file.list), 2, unlist)
   if(nrow(fcs.file.list) == 1) {
